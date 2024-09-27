@@ -25,25 +25,6 @@ const Login = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [remember, setRemember] = useState(false);
-  const [emailError, setEmailError] = useState('');
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const handleEmailChange = (text) => {
-    setEmail(text);
-    if (!validateEmail(text)) {
-      setEmailError('Por favor, insira um e-mail válido.');
-    } else {
-      setEmailError('');
-    }
-  };
-
-  const toggleRemember = () => {
-    setRemember(!remember);
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -89,24 +70,16 @@ const Login = ({ navigation }) => {
 
                 {/* Email Input */}
                 <TextInput
-                  style={[
-                    styles.input,
-                    emailError ? styles.inputError : null, // Estilo de erro para o input
-                  ]}
+                  style={styles.input}
                   placeholder="Email"
                   value={email}
-                  onChangeText={handleEmailChange}
+                  onChangeText={setEmail}
                   keyboardType="email-address"
                   autoCapitalize="none"
                   autoCorrect={false}
                   allowFontScaling={false}
                   placeholderTextColor="#A9A9A9"
                 />
-                {emailError ? (
-                  <Text style={styles.errorText} allowFontScaling={false}>
-                    {emailError}
-                  </Text>
-                ) : null}
 
                 {/* Password Input */}
                 <View style={styles.passwordContainer}>
@@ -135,23 +108,16 @@ const Login = ({ navigation }) => {
 
                 {/* Remember Me and Forgot Password */}
                 <View style={styles.rememberContainer}>
-                  <TouchableOpacity
-                    style={styles.checkboxContainer}
-                    onPress={toggleRemember}
-                    activeOpacity={0.8} // Reduz a opacidade ao clicar
-                  >
+                  <View style={styles.checkboxContainer}>
                     <Checkbox
                       value={remember}
-                      onValueChange={toggleRemember}
+                      onValueChange={setRemember}
                       color={remember ? '#FB7D10' : '#FB7D10'}
                     />
-                    <Text
-                      style={styles.rememberText}
-                      allowFontScaling={false}
-                    >
+                    <Text style={styles.rememberText} allowFontScaling={false}>
                       Lembrar senha.
                     </Text>
-                  </TouchableOpacity>
+                  </View>
                   <TouchableOpacity>
                     <Text style={styles.forgotText} allowFontScaling={false}>
                       Esqueceu sua senha?
@@ -304,18 +270,6 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.012,
     backgroundColor: '#fff',
   },
-  inputError: {
-    borderColor: 'red', // Cor de borda vermelha em caso de erro
-  },
-  errorText: {
-    color: 'red',
-    fontSize: Platform.select({
-      ios: width * 0.035,
-      android: width * 0.033,
-    }),
-    marginBottom: height * 0.01,
-    alignSelf: 'flex-start',
-  },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -367,13 +321,14 @@ const styles = StyleSheet.create({
   },
   buttonPrimary: {
     backgroundColor: 'transparent',
-    paddingVertical: height * 0.018,
+    paddingVertical: height * 0.012,
     borderRadius: 30,
     width: '100%',
     alignItems: 'center',
-    marginTop: height * 0.015,
+    marginTop: height * 0.012,
     borderWidth: 1,
     borderColor: '#1F2024',
+    
   },
   buttonText: {
     color: '#1F2024',
