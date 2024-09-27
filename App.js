@@ -7,6 +7,8 @@ import Welcome from './components/Welcome'; // Welcome
 import SignupScreen from './components/Signup';
 import SignupEmailScreen from './components/SignupEmail';
 import SurveyScreen from './components/SignupQuery';
+import SuccessScreen from './components/success';
+// import Login from './components/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +30,7 @@ export default function App() {
         <Stack.Screen name="Singup" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen name="SignupEmailScreen" component={SignupEmailScreen} options={{ headerShown: false }} />
         <Stack.Screen name='SurveyScreen' component={SurveyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='SuccessScreen' component={SuccessScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
