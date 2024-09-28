@@ -1,419 +1,354 @@
+// components/Home.js
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  ImageBackground,
-  Dimensions,
-  StatusBar,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import Checkbox from 'expo-checkbox';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Platform, Modal } from 'react-native';
+import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width, height } = Dimensions.get('window');
 
-const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [remember, setRemember] = useState(false);
-  const [emailError, setEmailError] = useState('');
-
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
-
-  const handleEmailChange = (text) => {
-    setEmail(text);
-    if (!validateEmail(text)) {
-      setEmailError('Por favor, insira um e-mail válido.');
-    } else {
-      setEmailError('');
-    }
-  };
-
-  const toggleRemember = () => {
-    setRemember(!remember);
-  };
+const Home = ({ navigation }) => {
+  const status = 1; // Simulando o status do usuário, ajuste conforme necessário
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.background}>
-        <StatusBar
-          barStyle={Platform.OS === 'ios' ? 'dark-content' : 'light-content'}
-          backgroundColor="transparent"
-          translucent
-        />
-        <ImageBackground
-          source={require('../assets/img/Splashcreen.png')}
-          style={styles.imageBackground}
-          imageStyle={styles.imageBackgroundStyle}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        {/* Header com logo e notificação */}
+        <View style={styles.headerContainer}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/img/go_logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+          </View>
+          <TouchableOpacity onPress={() => alert('Notificações')}>
+            <Ionicons name="notifications-outline" size={24} color="#1F2024" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Linha de separação do header */}
+        <View style={styles.headerLine} />
+
+        {/* Mensagem de bem-vindo */}
+        <View style={styles.welcomeContainer}>
+          <Text style={styles.welcomeText} allowFontScaling={false}>Bem-vindo à imoGo!</Text>
+          <Text style={styles.subText} allowFontScaling={false}>Seus imóveis publicados aparecerão aqui.</Text>
+        </View>
+
+        {/* Container principal para conteúdo */}
+        <View style={styles.bodyContainer}>
+          {status === 1 ? (
+            <View style={styles.noPropertiesContainer}>
+              <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => setModalVisible(true)} // Abre o modal ao clicar no botão
+              >
+                <Text style={styles.addButtonText} allowFontScaling={false}>+ Adicionar Imóvel</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.propertiesContainer}>
+              {/* Aqui você renderizaria a lista de imóveis */}
+              <Text style={styles.propertyText} allowFontScaling={false}>Seus imóveis cadastrados:</Text>
+              {/* Exemplo de um imóvel */}
+              <View style={styles.propertyItem}>
+                <Text style={styles.propertyText} allowFontScaling={false}>Apartamento em Brasília</Text>
+                <TouchableOpacity
+                  style={styles.propertyButton}
+                  onPress={() => navigation.navigate('PropertyDetailsScreen')}
+                >
+                  <Text style={styles.propertyButtonText} allowFontScaling={false}>Ver Detalhes</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </View>
+
+        {/* Modal para selecionar a categoria do imóvel */}
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
         >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.container}
-            keyboardVerticalOffset={Platform.select({ ios: 0, android: -150 })}
-          >
-            <ScrollView
-              contentContainerStyle={styles.scrollContainer}
-              showsVerticalScrollIndicator={false}
-              keyboardShouldPersistTaps="handled"
-              bounces={false}
-              scrollEnabled={false}
-            >
-              {/* Logo Container */}
-              <View style={styles.logoContainer}>
-                <Image
-                  source={require('../assets/img/logo.png')}
-                  style={styles.logo}
-                  resizeMode="contain"
-                />
-              </View>
-
-              {/* White Container */}
-              <View style={styles.whiteContainer}>
-                <View style={styles.titleContainer}>
-                  <Text style={styles.title} allowFontScaling={false}>
-                    Bem-Vindo!
-                  </Text>
-                </View>
-
-                {/* Email Input */}
-                <TextInput
-                  style={[
-                    styles.input,
-                    emailError ? styles.inputError : null, // Estilo de erro para o input
-                  ]}
-                  placeholder="Email"
-                  value={email}
-                  onChangeText={handleEmailChange}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  allowFontScaling={false}
-                  placeholderTextColor="#A9A9A9"
-                />
-                {emailError ? (
-                  <Text style={styles.errorText} allowFontScaling={false}>
-                    {emailError}
-                  </Text>
-                ) : null}
-
-                {/* Password Input */}
-                <View style={styles.passwordContainer}>
-                  <TextInput
-                    style={styles.inputPassword}
-                    placeholder="Senha"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!isPasswordVisible}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    allowFontScaling={false}
-                    placeholderTextColor="#A9A9A9"
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={24} color="#FFF" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle} allowFontScaling={false}>Escolha a categoria do imóvel</Text>
+              <View style={styles.categoryContainer}>
+                <TouchableOpacity style={styles.categoryButton} onPress={() => setModalVisible(false)}>
+                  <Image
+                    source={require('../assets/img/residencial.png')}
+                    style={styles.categoryIcon}
                   />
-                  <TouchableOpacity
-                    onPress={() => setIsPasswordVisible(!isPasswordVisible)}
-                    style={styles.eyeIcon}
-                  >
-                    <Ionicons
-                      name={isPasswordVisible ? 'eye-off' : 'eye'}
-                      size={24}
-                      color="gray"
-                    />
-                  </TouchableOpacity>
-                </View>
-
-                {/* Remember Me and Forgot Password */}
-                <View style={styles.rememberContainer}>
-                  <TouchableOpacity
-                    style={styles.checkboxContainer}
-                    onPress={toggleRemember}
-                    activeOpacity={0.8} // Reduz a opacidade ao clicar
-                  >
-                    <Checkbox
-                      value={remember}
-                      onValueChange={toggleRemember}
-                      color={remember ? '#FB7D10' : '#FB7D10'}
-                    />
-                    <Text
-                      style={styles.rememberText}
-                      allowFontScaling={false}
-                    >
-                      Lembrar senha.
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity>
-                    <Text style={styles.forgotText} allowFontScaling={false}>
-                      Esqueceu sua senha?
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Login Button */}
-                <TouchableOpacity style={styles.buttonPrimary}>
-                  <Text style={styles.buttonText} allowFontScaling={false}>
-                    Entrar
-                  </Text>
+                  <Text style={styles.categoryText} allowFontScaling={false}>Residencial</Text>
                 </TouchableOpacity>
-
-                {/* Separator Text */}
-                <Text style={styles.separatorText} allowFontScaling={false}>
-                  Ou acesse com
-                </Text>
-
-                {/* Social Buttons */}
-                <TouchableOpacity style={styles.buttonSocial}>
-                  <Ionicons
-                    name="logo-google"
-                    size={24}
-                    color="#EA4335"
-                    style={styles.socialIcon}
+                <TouchableOpacity style={styles.categoryButton} onPress={() => setModalVisible(false)}>
+                  <Image
+                    source={require('../assets/img/comercial.png')}
+                    style={styles.categoryIcon}
                   />
-                  <Text
-                    style={styles.buttonTextSocial}
-                    allowFontScaling={false}
-                  >
-                    Continuar com Google
-                  </Text>
+                  <Text style={styles.categoryText} allowFontScaling={false}>Comercial</Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonSocial}>
-                  <Ionicons
-                    name="logo-facebook"
-                    size={24}
-                    color="#3B5998"
-                    style={styles.socialIcon}
+                <TouchableOpacity style={styles.categoryButton} onPress={() => setModalVisible(false)}>
+                  <Image
+                    source={require('../assets/img/outro.png')}
+                    style={styles.categoryIcon}
                   />
-                  <Text
-                    style={styles.buttonTextSocial}
-                    allowFontScaling={false}
-                  >
-                    Continuar com Facebook
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.buttonSocial}>
-                  <Ionicons
-                    name="logo-apple"
-                    size={24}
-                    color="#000"
-                    style={styles.socialIcon}
-                  />
-                  <Text
-                    style={styles.buttonTextSocial}
-                    allowFontScaling={false}
-                  >
-                    Continuar com Apple
-                  </Text>
+                  <Text style={styles.categoryText} allowFontScaling={false}>Outro</Text>
                 </TouchableOpacity>
               </View>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </ImageBackground>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Linha de separação do rodapé */}
+        <View style={styles.footerLine} />
+
+        {/* Footer fixo */}
+        <View style={styles.footerContainer}>
+          <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('HomeScreen')}>
+            <Ionicons name="home" size={24} color="#FF7A00" />
+            <Text style={styles.footerItemTextActive} allowFontScaling={false}>Meus imóveis</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem} onPress={() => setModalVisible(true)}>
+            <FontAwesome5 name="plus-square" size={24} color="#7A7A7A" />
+            <Text style={styles.footerItemText} allowFontScaling={false}>Publicar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('PricerScreen')}>
+            <FontAwesome5 name="dollar-sign" size={24} color="#7A7A7A" />
+            <Text style={styles.footerItemText} allowFontScaling={false}>Precificador</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('ProfileScreen')}>
+            <Ionicons name="person-outline" size={24} color="#7A7A7A" />
+            <Text style={styles.footerItemText} allowFontScaling={false}>Perfil</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
+  safeArea: {
     flex: 1,
-  },
-  imageBackground: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-  },
-  imageBackgroundStyle: {
-    resizeMode: 'cover',
+    backgroundColor: '#F5F5F5',
   },
   container: {
     flex: 1,
-    justifyContent: 'flex-end',
+    backgroundColor: '#F5F5F5',
+    width: '100%',
   },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
+  headerContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.05,
+    paddingVertical: height * 0.02,
+    backgroundColor: '#F5F5F5',
   },
   logoContainer: {
-    height: height * 0.25,
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
   },
   logo: {
-    width: width * 0.35,
-    height: height * 0.08,
+    width: width * 0.15,
+    height: height * 0.05,
   },
-  whiteContainer: {
+  headerLine: {
+    height: 1,
+    backgroundColor: '#E9E9E9',
     width: '100%',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+  },
+  welcomeContainer: {
     paddingHorizontal: width * 0.05,
-    paddingVertical: height * 0.03,
+    paddingVertical: height * 0.02,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 3,
-    minHeight: height * 0.75,
-    paddingBottom: height * 0.05,
-    flexGrow: 1,
-    flexShrink: 0,
+    backgroundColor: '#F5F5F5',
   },
-  titleContainer: {
-    width: '100%',
-    alignItems: 'flex-start', // Garante que o título fique à esquerda
-  },
-  title: {
+  welcomeText: {
     fontFamily: 'Nunito_700Bold',
     fontSize: Platform.select({
-      ios: width * 0.055,
+      ios: width * 0.05,
       android: width * 0.05,
     }),
-    fontWeight: 'bold',
     color: '#1F2024',
-    marginBottom: height * 0.015,
-    textAlign: 'left', // Alinha o texto à esquerda
+    marginBottom: height * 0.005,
+    textAlign: 'center',
   },
-  input: {
-    width: '100%',
-    height: height * 0.055,
-    borderColor: '#EAEAEA',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: width * 0.04,
+  subText: {
+    fontFamily: 'Nunito_400Regular',
     fontSize: Platform.select({
       ios: width * 0.04,
-      android: width * 0.038,
-    }),
-    marginBottom: height * 0.012,
-    backgroundColor: '#fff',
-  },
-  inputError: {
-    borderColor: 'red', // Cor de borda vermelha em caso de erro
-  },
-  errorText: {
-    color: 'red',
-    fontSize: Platform.select({
-      ios: width * 0.035,
-      android: width * 0.033,
-    }),
-    marginBottom: height * 0.01,
-    alignSelf: 'flex-start',
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-  },
-  inputPassword: {
-    flex: 1,
-    height: height * 0.055,
-    borderColor: '#EAEAEA',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: width * 0.04,
-    fontSize: Platform.select({
-      ios: width * 0.04,
-      android: width * 0.038,
-    }),
-    backgroundColor: '#fff',
-  },
-  eyeIcon: {
-    position: 'absolute',
-    right: 15,
-  },
-  rememberContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    marginTop: height * 0.01,
-    marginBottom: height * 0.015,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rememberText: {
-    fontSize: Platform.select({
-      ios: width * 0.033,
-      android: width * 0.032,
-    }),
-    color: '#FB7D10',
-    marginLeft: 10,
-  },
-  forgotText: {
-    fontSize: Platform.select({
-      ios: width * 0.033,
-      android: width * 0.032,
-    }),
-    color: '#FB7D10',
-  },
-  buttonPrimary: {
-    backgroundColor: 'transparent',
-    paddingVertical: height * 0.018,
-    borderRadius: 30,
-    width: '100%',
-    alignItems: 'center',
-    marginTop: height * 0.015,
-    borderWidth: 1,
-    borderColor: '#1F2024',
-  },
-  buttonText: {
-    color: '#1F2024',
-    fontSize: Platform.select({
-      ios: width * 0.042,
       android: width * 0.04,
     }),
-    fontWeight: 'bold',
+    color: '#7A7A7A',
+    textAlign: 'center',
   },
-  separatorText: {
-    fontSize: Platform.select({
-      ios: width * 0.038,
-      android: width * 0.037,
-    }),
-    color: '#71727A',
-    marginVertical: height * 0.015,
-  },
-  buttonSocial: {
-    flexDirection: 'row',
+  bodyContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 30,
-    paddingVertical: height * 0.014,
+    paddingHorizontal: width * 0.05,
+    marginTop: height * 0.03,
+  },
+  noPropertiesContainer: {
     width: '100%',
-    marginBottom: height * 0.012,
+    alignItems: 'center',
+  },
+  addButton: {
+    backgroundColor: '#FF7A00',
+    borderRadius: 30,
+    paddingVertical: height * 0.02,
+    paddingHorizontal: width * 0.25,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
+  },
+  addButtonText: {
+    fontFamily: 'Nunito_700Bold',
+    color: '#FFF',
+    fontSize: Platform.select({
+      ios: width * 0.045,
+      android: width * 0.045,
+    }),
+    textAlign: 'center',
+  },
+  propertiesContainer: {
+    width: '100%',
+    paddingHorizontal: width * 0.05,
+  },
+  propertyItem: {
+    backgroundColor: '#FFF',
+    padding: height * 0.02,
+    marginVertical: height * 0.01,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
+  },
+  propertyText: {
+    fontFamily: 'Nunito_700Bold',
+    fontSize: Platform.select({
+      ios: width * 0.045,
+      android: width * 0.045,
+    }),
+    color: '#1F2024',
+  },
+  propertyButton: {
+    marginTop: height * 0.01,
+    paddingVertical: height * 0.01,
+    backgroundColor: '#FF7A00',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  propertyButtonText: {
+    fontFamily: 'Nunito_700Bold',
+    color: '#FFF',
+    fontSize: Platform.select({
+      ios: width * 0.04,
+      android: width * 0.04,
+    }),
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: width,
+    paddingVertical: height * 0.03,
+    paddingHorizontal: width * 0.05,
+    backgroundColor: '#FF7A00',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonTextSocial: {
-    fontSize: Platform.select({
-      ios: width * 0.043,
-      android: width * 0.04,
-    }),
-    color: '#333',
-    fontWeight: 'bold',
+  closeButton: {
+    position: 'absolute',
+    top: height * 0.02,
+    left: width * 0.05,
   },
-  socialIcon: {
-    marginRight: 10,
+  modalTitle: {
+    fontSize: width * 0.05,
+    color: '#FFF',
+    fontWeight: 'bold',
+    marginBottom: height * 0.03,
+    textAlign: 'center',
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  categoryButton: {
+    width: width * 0.22,
+    height: width * 0.22,
+    backgroundColor: '#FFF',
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: width * 0.02,
+  },
+  categoryIcon: {
+    width: '60%',
+    height: '60%',
+    resizeMode: 'contain',
+  },
+  categoryText: {
+    marginTop: height * 0.01,
+    fontSize: width * 0.03,
+    color: '#FB7D10',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  footerLine: {
+    height: 1,
+    backgroundColor: '#E9E9E9',
+    width: '100%',
+  },
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: height * 0.015,
+    backgroundColor: '#F5F5F5',
+  },
+  footerItem: {
+    alignItems: 'center',
+  },
+  footerItemText: {
+    fontSize: Platform.select({
+      ios: width * 0.03,
+      android: width * 0.03,
+    }),
+    fontFamily: 'Nunito_400Regular',
+    color: '#7A7A7A',
+    marginTop: 4,
+  },
+  footerItemTextActive: {
+    fontSize: Platform.select({
+      ios: width * 0.03,
+      android: width * 0.03,
+    }),
+    fontFamily: 'Nunito_700Bold',
+    color: '#FF7A00',
+    marginTop: 4,
   },
 });
 
-export default Login;
+export default Home;
