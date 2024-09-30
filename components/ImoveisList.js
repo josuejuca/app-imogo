@@ -11,17 +11,31 @@ const ImoveisList = ({ userId, navigation }) => {
     const fetchedImoveis = [
       {
         id: 1,
-        status: 'Aguardando minha assinatura',
+        status: 'Autorização de venda',
         imagem: require('../assets/img/banner_imovel.png'),
         valor: 'R$ 1.200.000,00',
         localizacao: 'Asa Norte - Brasília/DF',
       },
       {
         id: 2,
-        status: 'Publicado',
+        status: 'Avaliação Jurídica',
         imagem: require('../assets/img/banner_imovel.png'),
         valor: 'R$ 950.000,00',
         localizacao: 'Taguatinga - Brasília/DF',
+      },
+      {
+        id: 3,
+        status: 'Visita Fotográfica',
+        imagem: require('../assets/img/banner_imovel.png'),
+        valor: 'R$ 850.000,00',
+        localizacao: 'Águas Claras - Brasília/DF',
+      },
+      {
+        id: 4,
+        status: 'Publicado',
+        imagem: require('../assets/img/banner_imovel.png'),
+        valor: 'R$ 700.000,00',
+        localizacao: 'Samambaia - Brasília/DF',
       },
     ];
     setImoveis(fetchedImoveis);
@@ -56,7 +70,7 @@ const ImoveisList = ({ userId, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
   },
   listContainer: {
     paddingBottom: 20,

@@ -1,11 +1,10 @@
-// components/ImovelClassificacao.js
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Modal, Platform, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
-const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, setSelectedTipo }) => {
+const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigation }) => {
   const tiposPorCategoria = {
     Residencial: [
       'Selecionar', // Item padrão
@@ -31,28 +30,37 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, setSele
     ]
   };
 
-  // Obter os tipos de imóveis com base na categoria selecionada
-  const tipos = tiposPorCategoria[categoria] || ['Selecionar']; // Use 'Selecionar' se a categoria não existir
-  const [selectedTipo, setSelectedTipoLocal] = useState('Selecionar'); // Estado local para o tipo de imóvel selecionado
-  const [initialTipo, setInitialTipo] = useState('Selecionar'); // Estado para manter o valor inicial do tipo antes de qualquer alteração
-  const [dropdownVisible, setDropdownVisible] = useState(false); // Controle para mostrar ou esconder o menu suspenso
+  const tipos = tiposPorCategoria[categoria] || ['Selecionar'];
+  const [selectedTipo, setSelectedTipoLocal] = useState('Selecionar');
+  const [initialTipo, setInitialTipo] = useState('Selecionar');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleSelectTipo = (itemValue) => {
-    setSelectedTipoLocal(itemValue); // Atualiza o estado local
-    setDropdownVisible(false); // Esconde o dropdown após a seleção
+    setSelectedTipoLocal(itemValue);
+    setDropdownVisible(false);
   };
 
   const handleCancel = () => {
-    setSelectedTipoLocal(initialTipo); // Reverte a seleção ao valor inicial
-    setDropdownVisible(false); // Esconde o dropdown
-    setModalVisible(false); // Fecha o modal
+    setSelectedTipoLocal('Selecionar'); // Reseta o valor para o padrão ao cancelar
+    setDropdownVisible(false);
+    setModalVisible(false); // Fecha o modal sem salvar
   };
 
   const handleConfirm = () => {
     if (selectedTipo !== 'Selecionar') {
-      setInitialTipo(selectedTipo); // Salva o novo valor inicial
-      setSelectedTipo(selectedTipo); // Atualiza o estado no componente pai
-      setModalVisible(false); // Fecha o modal
+      setInitialTipo(selectedTipo);
+      setModalVisible(false);
+
+      // Navegar para a página de cadastro com os parâmetros selecionados
+      navigation.navigate('CadastroImovel', {
+        id: null, // id é null para novos cadastros
+        status: 1, // status inicial
+        classificacao: categoria, // categoria selecionada pelo usuário
+        tipo: selectedTipo // tipo selecionado pelo usuário
+      });
+
+      // Resetar o valor selecionado após a navegação para garantir que na próxima vez estará limpo
+      setSelectedTipoLocal('Selecionar');
     } else {
       alert('Por favor, selecione um tipo de imóvel.');
     }
@@ -114,8 +122,8 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, setSele
             <TouchableOpacity style={styles.cancelButton} onPress={() => handleCancel()}>
               <Text style={styles.cancelButtonText} allowFontScaling={false}>Cancelar</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.okButton} 
+            <TouchableOpacity
+              style={styles.okButton}
               onPress={() => handleConfirm()}
             >
               <Text style={styles.okButtonText} allowFontScaling={false}>Ok</Text>

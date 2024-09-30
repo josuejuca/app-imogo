@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions, Platform, Modal } from 'react-native';
+import { View, Text, TouchableOpacity,StatusBar, StyleSheet, Image, Dimensions, Platform, Modal } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImovelClassificacao from './imovelClassificacao';
 import ImoveisList from './ImoveisList';
 const { width, height } = Dimensions.get('window');
 
-const Home = ({ navigation }) => {
-    const status = 1; // Simulando o status do usuário, ajuste conforme necessário
+const Home = ({ route, navigation }) => {
+    const status = 2; // Simulando o status do usuário, ajuste conforme necessário
     const userId = 1; // Exemplo de ID de usuário
     console.log('User ID:', userId); // Debug para verificar se o ID está correto
     const [modalVisible, setModalVisible] = useState(false); // Controla o primeiro modal (categoria)
@@ -24,6 +24,11 @@ const Home = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
+                <StatusBar
+                    barStyle={Platform.OS === 'ios' ? 'dark-content' : 'dark-content'}
+                    backgroundColor="transparent"
+                    translucent
+                />
                 {/* Header com logo e notificação */}
                 <View style={styles.headerContainer}>
                     <View style={styles.logoContainer}>
@@ -118,6 +123,7 @@ const Home = ({ navigation }) => {
                     setModalVisible={setClassificationModalVisible}
                     categoria={categoria}
                     setSelectedTipo={setTipoImovel}
+                    navigation={navigation}
                 />
 
                 {/* Linha de separação do rodapé */}
@@ -207,8 +213,7 @@ const styles = StyleSheet.create({
     bodyContainer: {
         flex: 1,
         justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingHorizontal: width * 0.05,
+        paddingHorizontal: 0, // Remove padding lateral
         marginTop: height * 0.03,
     },
     noPropertiesContainer: {
@@ -239,8 +244,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     propertiesContainer: {
-        width: '100%',
-        paddingHorizontal: width * 0.05,
+        flex: 1, // Garantir que ocupe toda a altura
+        width: '100%', // Garantir que ocupe toda a largura
+        paddingHorizontal: 0, // Remover padding que pode centralizar os itens
     },
     propertyItem: {
         backgroundColor: '#FFF',
@@ -366,5 +372,6 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
 });
+
 
 export default Home;

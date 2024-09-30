@@ -10,6 +10,7 @@ import SurveyScreen from './components/SignupQuery';
 import SuccessScreen from './components/success';
 import Login from './components/Login';
 import Home from './components/Home';
+import CadastroImovel from './components/CadastroImovel';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ export default function App() {
         <Stack.Screen name='SuccessScreen' component={SuccessScreen} options={{ headerShown: false }} />
         <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
         <Stack.Screen name='Home' component={Home} options={{ headerShown: false }} />
+        <Stack.Screen name='CadastroImovel' component={CadastroImovel} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
