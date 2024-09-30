@@ -1,44 +1,64 @@
-// components/ImoveisList.js
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, ActivityIndicator, RefreshControl } from 'react-native';
+import axios from 'axios'; // Importando axios para fazer a requisição
 import ImovelCard from './ImovelCard';
 
 const ImoveisList = ({ userId, navigation }) => {
   const [imoveis, setImoveis] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // Estado para controlar o pull to refresh
 
+  // Função para mapear o status numérico para string
+  const getStatusString = (status) => {
+    if (status >= 1 && status <= 9) return 'Cadastro';
+    switch (status) {
+      case 10:
+        return 'Autorização de venda';
+      case 20:
+        return 'Avaliação Jurídica';
+      case 30:
+        return 'Visita Fotográfica';
+      case 40:
+        return 'Publicado';
+      default:
+        return 'Status Desconhecido';
+    }
+  };
+
+  // Função para buscar os imóveis do usuário
+  const fetchImoveis = async () => {
+    try {
+      const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${userId}/imoveis?skip=0&limit=100`);
+      const fetchedImoveis = response.data.map((imovel) => ({
+        id: imovel.id,
+        status: getStatusString(imovel.status),
+        imagem: require('../assets/img/banner_imovel.png'), // Imagem padrão
+        valor: imovel.valor_venda ? formatCurrency(imovel.valor_venda) : 'Valor não informado',
+        localizacao: imovel.cidade && imovel.uf ? `${imovel.cidade} - ${imovel.uf}` : 'Finalize o Cadastro',
+      }));
+      setImoveis(fetchedImoveis);
+    } catch (error) {
+      console.error('Erro ao buscar imóveis:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Função para formatar o valor no formato de moeda brasileira
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+  };
+
+  // Função chamada ao puxar para baixo a lista (refresh)
+  const onRefresh = async () => {
+    setRefreshing(true); // Ativa o estado de refreshing
+    await fetchImoveis(); // Recarrega os imóveis
+    setRefreshing(false); // Desativa o estado de refreshing
+  };
+
+  // Hook para buscar os imóveis quando o componente é montado
   useEffect(() => {
-    console.log('Buscando imóveis para o usuário:', userId);
-    const fetchedImoveis = [
-      {
-        id: 1,
-        status: 'Autorização de venda',
-        imagem: require('../assets/img/banner_imovel.png'),
-        valor: 'R$ 1.200.000,00',
-        localizacao: 'Asa Norte - Brasília/DF',
-      },
-      {
-        id: 2,
-        status: 'Avaliação Jurídica',
-        imagem: require('../assets/img/banner_imovel.png'),
-        valor: 'R$ 950.000,00',
-        localizacao: 'Taguatinga - Brasília/DF',
-      },
-      {
-        id: 3,
-        status: 'Visita Fotográfica',
-        imagem: require('../assets/img/banner_imovel.png'),
-        valor: 'R$ 850.000,00',
-        localizacao: 'Águas Claras - Brasília/DF',
-      },
-      {
-        id: 4,
-        status: 'Publicado',
-        imagem: require('../assets/img/banner_imovel.png'),
-        valor: 'R$ 700.000,00',
-        localizacao: 'Samambaia - Brasília/DF',
-      },
-    ];
-    setImoveis(fetchedImoveis);
+    fetchImoveis();
   }, [userId]);
 
   const renderImovel = ({ item }) => (
@@ -47,6 +67,14 @@ const ImoveisList = ({ userId, navigation }) => {
       onPress={() => navigation.navigate('DetalhesImovel', { imovelId: item.id })}
     />
   );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FB7D10" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -61,6 +89,9 @@ const ImoveisList = ({ userId, navigation }) => {
           renderItem={renderImovel}
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       )}
     </View>
@@ -74,6 +105,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     paddingBottom: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyContainer: {
     flex: 1,

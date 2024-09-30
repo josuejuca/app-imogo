@@ -7,6 +7,8 @@ const { width, height } = Dimensions.get('window');
 // Função para definir as cores dos status
 const getStatusColor = (status) => {
   switch (status) {
+    case 'Cadastro':
+      return '#B0B0B0';
     case 'Autorização de venda':
       return '#FFB874';
     case 'Avaliação Jurídica':

@@ -1,25 +1,67 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity,StatusBar, StyleSheet, Image, Dimensions, Platform, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StatusBar, Image, Dimensions, Platform, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ImovelClassificacao from './imovelClassificacao';
 import ImoveisList from './ImoveisList';
+import axios from 'axios'; // Importando axios para fazer a requisição à API
+
 const { width, height } = Dimensions.get('window');
 
 const Home = ({ route, navigation }) => {
-    const status = 2; // Simulando o status do usuário, ajuste conforme necessário
-    const userId = 1; // Exemplo de ID de usuário
-    console.log('User ID:', userId); // Debug para verificar se o ID está correto
+    const { userId } = route.params || {}; // Obtendo o ID do usuário vindo da tela anterior
+
+    const [userInfo, setUserInfo] = useState(null); // Estado para armazenar as informações do usuário
+    const [loading, setLoading] = useState(true); // Estado de carregamento
     const [modalVisible, setModalVisible] = useState(false); // Controla o primeiro modal (categoria)
     const [classificationModalVisible, setClassificationModalVisible] = useState(false); // Controla o segundo modal (tipo de imóvel)
     const [categoria, setCategoria] = useState('');
     const [tipoImovel, setTipoImovel] = useState('');
+
+    // Se o userId for indefinido, redireciona o usuário para a tela de login
+    useEffect(() => {
+        if (!userId) {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' }],
+            });
+        }
+    }, [userId, navigation]);
+
+    // Função para buscar os dados do usuário
+    const fetchUserInfo = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${userId}`);
+            setUserInfo(response.data); // Armazena as informações do usuário
+        } catch (error) {
+            console.error('Erro ao buscar informações do usuário:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Hook para buscar os dados do usuário quando a tela for carregada
+    useEffect(() => {
+        if (userId) {
+            fetchUserInfo(); // Chama a função para buscar os dados do usuário
+        }
+    }, [userId]);
 
     const handleCategorySelect = (selectedCategoria) => {
         setCategoria(selectedCategoria);
         setModalVisible(false); // Fecha o primeiro modal
         setTimeout(() => setClassificationModalVisible(true), 300); // Abre o segundo modal após 300ms
     };
+
+    // Exibindo um indicador de carregamento enquanto busca as informações do usuário
+    if (loading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#FB7D10" />
+            </View>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -46,8 +88,8 @@ const Home = ({ route, navigation }) => {
                 {/* Linha de separação do header */}
                 <View style={styles.headerLine} />
 
-                {/* Mensagem de bem-vindo */}
-                {status === 1 ? (
+                {/* Mensagem de boas-vindas */}
+                {userInfo?.status === 1 ? (
                     <View style={styles.welcomeContainer}>
                         <Text style={styles.welcomeText} allowFontScaling={false}>Bem-vindo à imoGo!</Text>
                         <Text style={styles.subText} allowFontScaling={false}>Seus imóveis publicados aparecerão aqui.</Text>
@@ -57,10 +99,11 @@ const Home = ({ route, navigation }) => {
                         <Text style={styles.welcomeText} allowFontScaling={false}>Meus imóveis</Text>
                     </View>
                 )}
+
                 {/* Container principal para conteúdo */}
                 <View style={styles.bodyContainer}>
-                    {/* Verifica se o status é 1 para mostrar o botão de adicionar imóvel */}
-                    {status === 1 && (
+                    {/* Verifica o status do usuário para mostrar o botão de adicionar imóvel ou a lista de imóveis */}
+                    {userInfo?.status === 1 ? (
                         <View style={styles.noPropertiesContainer}>
                             <TouchableOpacity
                                 style={styles.addButton}
@@ -69,15 +112,12 @@ const Home = ({ route, navigation }) => {
                                 <Text style={styles.addButtonText} allowFontScaling={false}>+ Adicionar Imóvel</Text>
                             </TouchableOpacity>
                         </View>
-                    )}
-
-                    {/* Exibe a lista de imóveis caso status não seja 1 */}
-                    {status !== 1 && (
+                    ) : (
                         <ImoveisList userId={userId} navigation={navigation} />
                     )}
                 </View>
 
-                {/* Primeiro Modal para selecionar a categoria do imóvel */}
+                {/* Modal para selecionar a categoria do imóvel */}
                 <Modal
                     visible={modalVisible}
                     animationType="slide"
@@ -126,12 +166,9 @@ const Home = ({ route, navigation }) => {
                     navigation={navigation}
                 />
 
-                {/* Linha de separação do rodapé */}
-                <View style={styles.footerLine} />
-
                 {/* Footer fixo */}
                 <View style={styles.footerContainer}>
-                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('HomeScreen')}>
+                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('Home', { userId })}>
                         <Ionicons name="home" size={24} color="#FF7A00" />
                         <Text style={styles.footerItemTextActive} allowFontScaling={false}>Meus imóveis</Text>
                     </TouchableOpacity>
@@ -152,6 +189,7 @@ const Home = ({ route, navigation }) => {
         </SafeAreaView>
     );
 };
+
 
 // Estilização
 const styles = StyleSheet.create({

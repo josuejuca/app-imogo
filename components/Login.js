@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   Image,
   ImageBackground,
   Dimensions,
@@ -14,9 +13,14 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   ScrollView,
+  Animated,
+  StyleSheet,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Checkbox from 'expo-checkbox';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'; // Importando o axios
 
 const { width, height } = Dimensions.get('window');
 
@@ -24,7 +28,110 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(true);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [emailError, setEmailError] = useState('');
+
+  // Animação para o botão
+  const fadeAnim = useRef(new Animated.Value(0.5)).current;
+
+  // Validação de email usando regex
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Função para salvar login no AsyncStorage
+  const saveLoginInfo = async (userId) => {
+    try {
+      await AsyncStorage.setItem('userId', userId);
+    } catch (error) {
+      console.error('Error saving user ID', error);
+    }
+  };
+  // Função para remover o login do AsyncStorage
+  const removeLoginInfo = async () => {
+    try {
+      await AsyncStorage.removeItem('userId');
+    } catch (error) {
+      console.error('Error removing user ID', error);
+    }
+  };
+
+  // Função para lidar com o login via API utilizando axios
+  // Função para lidar com o login via API utilizando axios
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://192.168.122.9:8000/login', {
+        email: email,
+        senha: password,
+      });
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log('Resposta da API:', data);
+
+        // Verifique se o usuario_id existe
+        if (data.usuario_id) {
+          if (remember) {
+            console.log('Salvando userId:', data.usuario_id);
+            await AsyncStorage.setItem('userId', String(data.usuario_id)); // Salva o userId no AsyncStorage
+          } else {
+            console.log('Removendo userId');
+            await removeLoginInfo(); // Remove o userId se "Lembrar senha" não estiver marcado
+          }
+
+          // Redefine a navegação e define "Home" como a única tela no histórico
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Home', params: { userId: data.usuario_id } }],
+          });
+        } else {
+          Alert.alert('Erro de Login', 'ID de usuário não encontrado. Tente novamente.');
+        }
+      } else {
+        Alert.alert('Erro de Login', 'Credenciais inválidas, tente novamente.');
+      }
+    } catch (error) {
+      if (error.response) {
+        Alert.alert('Erro de Login', error.response.data.message || 'Credenciais inválidas.');
+      } else if (error.request) {
+        Alert.alert('Erro de Conexão', 'Não foi possível conectar ao servidor. Verifique sua conexão ou tente mais tarde.');
+      } else {
+        Alert.alert('Erro', 'Ocorreu um erro ao fazer login.');
+      }
+    }
+  };
+
+
+
+
+  useEffect(() => {
+    // Habilitar botão se email e senha estiverem preenchidos corretamente
+    if (email !== '' && password !== '' && validateEmail(email)) {
+      setIsButtonEnabled(true);
+      setEmailError(''); // Limpar erro se o email for válido
+      // Animar o botão para opacidade total
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setIsButtonEnabled(false);
+      if (email !== '' && !validateEmail(email)) {
+        setEmailError('Por favor, insira um email válido.');
+      } else {
+        setEmailError('');
+      }
+      // Animar o botão para meia opacidade
+      Animated.timing(fadeAnim, {
+        toValue: 0.5,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [email, password]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -70,7 +177,7 @@ const Login = ({ navigation }) => {
 
                 {/* Email Input */}
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, emailError ? styles.inputError : null]}
                   placeholder="Email"
                   value={email}
                   onChangeText={setEmail}
@@ -80,6 +187,11 @@ const Login = ({ navigation }) => {
                   allowFontScaling={false}
                   placeholderTextColor="#A9A9A9"
                 />
+                {emailError ? (
+                  <Text style={styles.errorText} allowFontScaling={false}>
+                    {emailError}
+                  </Text>
+                ) : null}
 
                 {/* Password Input */}
                 <View style={styles.passwordContainer}>
@@ -125,12 +237,27 @@ const Login = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
 
-                {/* Login Button */}
-                <TouchableOpacity style={styles.buttonPrimary} onPress={() => navigation.navigate('Home')}>
-                  <Text style={styles.buttonText} allowFontScaling={false} >
-                    Entrar
-                  </Text>
-                </TouchableOpacity>
+                {/* Login Button with animation */}
+                <Animated.View style={{ opacity: fadeAnim, width: '100%' }}>
+                  <TouchableOpacity
+                    style={[
+                      isButtonEnabled ? styles.buttonPrimary : styles.buttonSecondary,
+                    ]}
+                    onPress={handleLogin}
+                    disabled={!isButtonEnabled}
+                  >
+                    <Text
+                      style={
+                        isButtonEnabled
+                          ? styles.buttonTextPrimary
+                          : styles.buttonTextSecondary
+                      }
+                      allowFontScaling={false}
+                    >
+                      Entrar
+                    </Text>
+                  </TouchableOpacity>
+                </Animated.View>
 
                 {/* Separator Text */}
                 <Text style={styles.separatorText} allowFontScaling={false}>
@@ -243,7 +370,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     width: '100%',
-    alignItems: 'flex-start', // Garante que o título fique à esquerda
+    alignItems: 'flex-start',
   },
   title: {
     fontFamily: 'Nunito_700Bold',
@@ -254,7 +381,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#1F2024',
     marginBottom: height * 0.015,
-    textAlign: 'left', // Alinha o texto à esquerda
+    textAlign: 'left',
   },
   input: {
     width: '100%',
@@ -269,6 +396,15 @@ const styles = StyleSheet.create({
     }),
     marginBottom: height * 0.012,
     backgroundColor: '#fff',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: width * 0.03,
+    marginBottom: height * 0.012,
+    alignSelf: 'flex-start',
+  },
+  inputError: {
+    borderColor: 'red', // Borda vermelha quando houver erro
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -320,22 +456,33 @@ const styles = StyleSheet.create({
     color: '#FB7D10',
   },
   buttonPrimary: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#FB7D10',
     paddingVertical: height * 0.012,
+    paddingHorizontal: width * 0.1,
+    borderRadius: 30,
+    marginBottom: height * 0.012,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonSecondary: {
+    borderColor: '#1F2024',
+    borderWidth: 1,
+    paddingVertical: height * 0.012,
+    paddingHorizontal: width * 0.1,
     borderRadius: 30,
     width: '100%',
     alignItems: 'center',
-    marginTop: height * 0.012,
-    borderWidth: 1,
-    borderColor: '#1F2024',
-    
   },
-  buttonText: {
+  buttonTextPrimary: {
+    fontFamily: 'Nunito_700Bold',
+    color: '#F5F5F5',
+    fontSize: width * 0.04,
+    fontWeight: 'bold',
+  },
+  buttonTextSecondary: {
+    fontFamily: 'Nunito_700Bold',
     color: '#1F2024',
-    fontSize: Platform.select({
-      ios: width * 0.042,
-      android: width * 0.04,
-    }),
+    fontSize: width * 0.04,
     fontWeight: 'bold',
   },
   separatorText: {

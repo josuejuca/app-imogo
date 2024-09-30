@@ -55,7 +55,7 @@ const CheckIcon = () => (
 
 const CadastroImovel = ({ route, navigation }) => {
   const { id = null, status = 1, classificacao = '', tipo = '' } = route.params || {}; // Parâmetros padrão para novos cadastros
-  
+  console.log(status)
   const steps = [
     { label: 'Características', status: 1, view: 'CaracteristicasView' },
     { label: 'Endereço do imóvel', status: 2, view: 'EnderecoView' },
@@ -70,10 +70,10 @@ const CadastroImovel = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <BackArrowIcon />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Cadastro do imóvel</Text>
+        <Text style={styles.headerTitle} allowFontScaling={false}>Cadastro do imóvel</Text>
       </View>
 
-      <Text style={styles.classificacaoText}>{classificacao} - {tipo}</Text>
+      <Text style={styles.classificacaoText} allowFontScaling={false}>{classificacao} - {tipo}</Text>
 
       <View style={styles.stepsContainer}>
         {steps.map((step, index) => (
@@ -87,7 +87,7 @@ const CadastroImovel = ({ route, navigation }) => {
               }
             }}
           >
-            <View style={styles.stepLeft}>
+            <View style={styles.stepLeft} >
               {index !== steps.length - 1 && <View style={styles.stepLine} />}
               <View style={[styles.stepCircle, { backgroundColor: getStepColor(status, step.status) }]} />
               <Text style={styles.stepText}>{step.label}</Text>
