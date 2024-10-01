@@ -131,21 +131,21 @@ const Home = ({ route, navigation }) => {
                             </TouchableOpacity>
                             <Text style={styles.modalTitle} allowFontScaling={false}>Escolha a categoria do imóvel</Text>
                             <View style={styles.categoryContainer}>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Residencial')}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Residencial', userId)}>
                                     <Image
                                         source={require('../assets/img/residencial.png')}
                                         style={styles.categoryIcon}
                                     />
                                     <Text style={styles.categoryText} allowFontScaling={false}>Residencial</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Comercial')}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Comercial', userId)}>
                                     <Image
                                         source={require('../assets/img/comercial.png')}
                                         style={styles.categoryIcon}
                                     />
                                     <Text style={styles.categoryText} allowFontScaling={false}>Comercial</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Outro')}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Outro', userId)}>
                                     <Image
                                         source={require('../assets/img/outro.png')}
                                         style={styles.categoryIcon}
@@ -162,6 +162,7 @@ const Home = ({ route, navigation }) => {
                     modalVisible={classificationModalVisible}
                     setModalVisible={setClassificationModalVisible}
                     categoria={categoria}
+                    userId={userId}
                     setSelectedTipo={setTipoImovel}
                     navigation={navigation}
                 />

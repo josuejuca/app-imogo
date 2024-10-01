@@ -13,6 +13,7 @@ import Home from './components/Home';
 import CadastroImovel from './components/CadastroImovel';
 import ProfileScreen from './components/ProfileScreen';
 import PropertyCharacteristics from './components/PropertyCharacteristics';
+import oneCadastroImovel from './components/oneCadastroImovel';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,7 +61,7 @@ export default function App() {
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen 
           name="Welcome" 
-          component={PropertyCharacteristics} 
+          component={oneCadastroImovel} 
           options={{ headerShown: false }} 
         />
         <Stack.Screen name="Singup" component={SignupScreen} options={{ headerShown: false }} />
@@ -76,6 +77,7 @@ export default function App() {
         />
         <Stack.Screen name='CadastroImovel' component={CadastroImovel} options={{ headerShown: false }} />
         <Stack.Screen name='ProfileScreen' component={ProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='PropertyCharacteristics' component={PropertyCharacteristics} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

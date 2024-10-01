@@ -57,7 +57,7 @@ const CadastroImovel = ({ route, navigation }) => {
   const { id = null, status = 1, classificacao = '', tipo = '' } = route.params || {}; // Parâmetros padrão para novos cadastros
   console.log(status)
   const steps = [
-    { label: 'Características', status: 1, view: 'CaracteristicasView' },
+    { label: 'Características', status: 1, view: 'PropertyCharacteristics' },
     { label: 'Endereço do imóvel', status: 2, view: 'EnderecoView' },
     { label: 'Dados do proprietário', status: 3, view: 'DadosProprietarioView' },
     { label: 'Foto da CNH', status: 4, view: 'FotoCnhView' },
@@ -83,7 +83,7 @@ const CadastroImovel = ({ route, navigation }) => {
             disabled={status !== step.status}  // Desativa os botões que não estão na vez
             onPress={() => {
               if (status === step.status) {
-                navigation.navigate(step.view, { etapa: step.label, status: step.status, id });
+                navigation.navigate(step.view, { etapa: step.label, status: step.status, id, classificacao, tipo });
               }
             }}
           >
@@ -101,7 +101,6 @@ const CadastroImovel = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
   safeArea: {

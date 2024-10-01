@@ -1,11 +1,14 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView,StatusBar } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-const PropertyCharacteristics = ({ navigation }) => {
+const PropertyCharacteristics = ({ navigation, route }) => {
+    const { id = null, status = 1, classificacao = '', tipo = '' } = route.params || {};
     return (
+        
         <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="dark-content" />
             <View style={styles.progressBarContainer}>
                 <View style={styles.progressSegmentHalfFilled}>
                     <View style={styles.progressSegmentHalfFilledInner}></View>
@@ -25,6 +28,9 @@ const PropertyCharacteristics = ({ navigation }) => {
             <Text style={styles.title} allowFontScaling={false}>Preencha as características do imóvel</Text>
             <Text style={styles.description} allowFontScaling={false}>
                 Essas informações irão ajudar quem está interessado no seu imóvel a encontrar seu anúncio mais rápido.
+            </Text>
+            <Text style={styles.description} allowFontScaling={false}>
+                {classificacao} - {tipo} | User ID: {} 
             </Text>
 
             <TouchableOpacity
@@ -50,6 +56,10 @@ const styles = StyleSheet.create({
     },
     progressBarContainer: {
         marginTop: Platform.select({
+            ios: height * 0.02, // Espaço menor no iOS
+            android: height * 0.015, // Espaço menor no Android
+        }),
+        margin:Platform.select({
             ios: height * 0.02, // Espaço menor no iOS
             android: height * 0.015, // Espaço menor no Android
         }),
