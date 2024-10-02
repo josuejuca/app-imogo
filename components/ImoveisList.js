@@ -8,30 +8,13 @@ const ImoveisList = ({ userId, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false); // Estado para controlar o pull to refresh
 
-  // Função para mapear o status numérico para string
-  const getStatusString = (status) => {
-    if (status >= 1 && status <= 9) return 'Cadastro';
-    switch (status) {
-      case 10:
-        return 'Autorização de venda';
-      case 20:
-        return 'Avaliação Jurídica';
-      case 30:
-        return 'Visita Fotográfica';
-      case 40:
-        return 'Publicado';
-      default:
-        return 'Status Desconhecido';
-    }
-  };
-
   // Função para buscar os imóveis do usuário
   const fetchImoveis = async () => {
     try {
       const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${userId}/imoveis?skip=0&limit=100`);
       const fetchedImoveis = response.data.map((imovel) => ({
         id: imovel.id,
-        status: getStatusString(imovel.status),
+        status: imovel.status, // Agora estamos usando IdStatus para o status numérico
         imagem: require('../assets/img/banner_imovel.png'), // Imagem padrão
         valor: imovel.valor_venda ? formatCurrency(imovel.valor_venda) : 'Valor não informado',
         localizacao: imovel.cidade && imovel.uf ? `${imovel.cidade} - ${imovel.uf}` : 'Finalize o Cadastro',
@@ -43,6 +26,8 @@ const ImoveisList = ({ userId, navigation }) => {
       setLoading(false);
     }
   };
+
+  console.log()
 
   // Função para formatar o valor no formato de moeda brasileira
   const formatCurrency = (value) => {

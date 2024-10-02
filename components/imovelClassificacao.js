@@ -30,7 +30,7 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigat
       'Rural'
     ]
   };
-
+  console.log("A", userId)
   const tipos = tiposPorCategoria[categoria] || ['Selecionar'];
  
   const [selectedTipo, setSelectedTipoLocal] = useState('Selecionar');
@@ -59,7 +59,7 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigat
         status: 1, // status inicial
         classificacao: categoria, // categoria selecionada pelo usuário
         tipo: selectedTipo, // tipo selecionado pelo usuário
-        userID: userId
+        uID: userId
       });
 
       // Resetar o valor selecionado após a navegação para garantir que na próxima vez estará limpo

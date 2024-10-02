@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, Platform, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, Platform, StatusBar, ActivityIndicator } from 'react-native';
+import axios from 'axios';
 import Svg, { Path, G, Rect, Mask, Ellipse, ClipPath } from 'react-native-svg';
 
 const { width, height } = Dimensions.get('window');
@@ -54,8 +55,38 @@ const CheckIcon = () => (
 );
 
 const CadastroImovel = ({ route, navigation }) => {
-  const { id = null, status = 1, classificacao = '', tipo = '' } = route.params || {}; // Parâmetros padrão para novos cadastros
-  console.log(status)
+  const { id = null, status = 1, classificacao = '', tipo = '', uID } = route.params || {};
+  
+  // Estado para armazenar os dados do imóvel
+  const [imovel, setImovel] = useState({
+    id,
+    status,
+    classificacao,
+    tipo,
+    usuario_id: uID,
+  });
+  const [loading, setLoading] = useState(false);
+
+  // Função para buscar os dados do imóvel
+  const fetchImovelData = async (imovelId) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://192.168.122.9:8000/api/v1/imoveis/${imovelId}`);
+      setImovel(response.data);
+    } catch (error) {
+      console.error('Erro ao buscar os dados do imóvel:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hook para buscar os dados do imóvel quando o ID estiver presente
+  useEffect(() => {
+    if (id) {
+      fetchImovelData(id);
+    }
+  }, [id]);
+
   const steps = [
     { label: 'Características', status: 1, view: 'PropertyCharacteristics' },
     { label: 'Endereço do imóvel', status: 2, view: 'EnderecoView' },
@@ -63,6 +94,14 @@ const CadastroImovel = ({ route, navigation }) => {
     { label: 'Foto da CNH', status: 4, view: 'FotoCnhView' },
     { label: 'Selfie do proprietário', status: 5, view: 'SelfieProprietarioView' },
   ];
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <ActivityIndicator size="large" color="#FB7D10" />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -73,27 +112,35 @@ const CadastroImovel = ({ route, navigation }) => {
         <Text style={styles.headerTitle} allowFontScaling={false}>Cadastro do imóvel</Text>
       </View>
 
-      <Text style={styles.classificacaoText} allowFontScaling={false}>{classificacao} - {tipo}</Text>
+      <Text style={styles.classificacaoText} allowFontScaling={false}>
+        {imovel.classificacao} - {imovel.tipo} - ID: {imovel.id} user: {imovel.status}
+      </Text>
 
       <View style={styles.stepsContainer}>
         {steps.map((step, index) => (
           <TouchableOpacity
             key={step.status}
             style={styles.stepWrapper}
-            disabled={status !== step.status}  // Desativa os botões que não estão na vez
+            disabled={imovel.status !== step.status}  // Desativa os botões que não estão na vez
             onPress={() => {
-              if (status === step.status) {
-                navigation.navigate(step.view, { etapa: step.label, status: step.status, id, classificacao, tipo });
+              if (imovel.status === step.status) {
+                navigation.navigate(step.view, {
+                  etapa: step.label,
+                  status: step.status,
+                  id: imovel.id,
+                  classificacao: imovel.classificacao,
+                  tipo: imovel.tipo,
+                });
               }
             }}
           >
-            <View style={styles.stepLeft} >
+            <View style={styles.stepLeft}>
               {index !== steps.length - 1 && <View style={styles.stepLine} />}
-              <View style={[styles.stepCircle, { backgroundColor: getStepColor(status, step.status) }]} />
+              <View style={[styles.stepCircle, { backgroundColor: getStepColor(imovel.status, step.status) }]} />
               <Text style={styles.stepText}>{step.label}</Text>
             </View>
             <View>
-              {status === step.status ? <StepArrowIcon /> : (status > step.status ? <CheckIcon /> : null)}
+              {imovel.status === step.status ? <StepArrowIcon /> : (imovel.status > step.status ? <CheckIcon /> : null)}
             </View>
           </TouchableOpacity>
         ))}

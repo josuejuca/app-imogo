@@ -12,7 +12,7 @@ const oneCadastroImovel = () => {
   // Funções de incremento e decremento
   const handleIncrement = (setter, value) => setter(value + 1);
   const handleDecrement = (setter, value) => setter(Math.max(0, value - 1));
-
+ 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
