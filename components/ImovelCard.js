@@ -88,7 +88,7 @@ const getDescription = (status) => {
 
 const ImovelCard = ({ imovel }) => {
   const navigation = useNavigation(); // Hook useNavigation para obter o objeto navigation
-  const { status, valor, localizacao, id } = imovel; // Incluímos o ID do imóvel aqui
+  const { status, valor, localizacao, id, imagem } = imovel; // Incluímos o ID do imóvel aqui
   const { progress, stages, color } = getProgressBar(status);
   const description = getDescription(status);
   const icon = getStatusIcon(status);
@@ -108,7 +108,9 @@ const ImovelCard = ({ imovel }) => {
     <TouchableOpacity style={styles.cardContainer} onPress={handleNavigation}>
       {/* Imagem do imóvel */}
       <View style={styles.imageContainer}>
-        <Image source={require('../assets/img/banner_imovel2.jpg')} style={styles.image} resizeMode="cover" />
+      <Image source={{ uri: imagem }} style={styles.image} resizeMode="cover" />
+
+
       </View>
 
       {/* Seção de Descrição e Progresso */}

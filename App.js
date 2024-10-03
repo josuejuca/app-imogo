@@ -61,7 +61,7 @@ export default function App() {
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen 
           name="Welcome" 
-          component={Welcome} 
+          component={oneCadastroImovel} 
           options={{ headerShown: false }} 
         />
         <Stack.Screen name="Singup" component={SignupScreen} options={{ headerShown: false }} />

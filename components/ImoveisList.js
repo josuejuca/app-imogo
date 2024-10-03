@@ -15,7 +15,7 @@ const ImoveisList = ({ userId, navigation }) => {
       const fetchedImoveis = response.data.map((imovel) => ({
         id: imovel.id,
         status: imovel.status, // Agora estamos usando IdStatus para o status numérico
-        imagem: require('../assets/img/banner_imovel.png'), // Imagem padrão
+        imagem: imovel.foto_app_capa,
         valor: imovel.valor_venda ? formatCurrency(imovel.valor_venda) : 'Valor não informado',
         localizacao: imovel.cidade && imovel.uf ? `${imovel.cidade} - ${imovel.uf}` : 'Finalize o Cadastro',
       }));
