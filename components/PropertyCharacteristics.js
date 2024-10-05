@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView,StatusBar } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
 const PropertyCharacteristics = ({ navigation, route }) => {
-    const { id = null, status = 1, classificacao = '', tipo = '' } = route.params || {};
+    const { id = null, status = 1, classificacao = '', tipo = '', userID} = route.params || {};
     return (
         
         <SafeAreaView style={styles.container}>
@@ -30,12 +30,12 @@ const PropertyCharacteristics = ({ navigation, route }) => {
                 Essas informações irão ajudar quem está interessado no seu imóvel a encontrar seu anúncio mais rápido.
             </Text>
             <Text style={styles.description} allowFontScaling={false}>
-                {classificacao} - {tipo} | User ID: {} 
+                {classificacao} - {tipo} | User ID: {userID} 
             </Text>
 
             <TouchableOpacity
                 style={styles.buttonPrimary}
-                onPress={() => navigation.navigate('NextScreen')} // Ajuste para a navegação correta
+                onPress={() => navigation.navigate('OneCadastroImovel', {classificacao, tipo, userID})} // Ajuste para a navegação correta
             >
                 <Text style={styles.buttonText} allowFontScaling={false}>Inserir características</Text>
             </TouchableOpacity>

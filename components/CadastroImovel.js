@@ -113,7 +113,7 @@ const CadastroImovel = ({ route, navigation }) => {
       </View>
 
       <Text style={styles.classificacaoText} allowFontScaling={false}>
-        {imovel.classificacao} - {imovel.tipo} - ID: {imovel.id} user: {imovel.status}
+        {imovel.classificacao} - {imovel.tipo} - ID: {imovel.id} user: {imovel.status} | usrID: {uID}
       </Text>
 
       <View style={styles.stepsContainer}>
@@ -130,6 +130,7 @@ const CadastroImovel = ({ route, navigation }) => {
                   id: imovel.id,
                   classificacao: imovel.classificacao,
                   tipo: imovel.tipo,
+                  userID: uID
                 });
               }
             }}
