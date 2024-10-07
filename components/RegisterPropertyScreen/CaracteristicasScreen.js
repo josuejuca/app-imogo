@@ -2,10 +2,11 @@ import React, { useState, useRef } from 'react';
 import { Alert, View, Text, TouchableOpacity, TextInput, ScrollView, StatusBar, Dimensions, SafeAreaView, Platform, Image, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Checkbox from 'expo-checkbox';
 import axios from 'axios';
-import DetalhesModal from './DetalhesModal'; // Importe o modal
-import DescricaoModal from './DescricaoModal';
-import SituacaoImovelSelect from './SituacaoImovelSelect';
-import PagamentoModal from './PagamentoModal';
+import DetalhesModal from '../modal/DetalhesModal'; // Importe o modal
+import DescricaoModal from '../modal/DescricaoModal';
+import SituacaoImovelSelect from '../modal/SituacaoImovelSelectModal';
+import PagamentoModal from '../modal/PagamentoModal';
+
 
 import Svg, { Path, G, Rect, Mask, Ellipse, ClipPath } from 'react-native-svg';
 
@@ -40,16 +41,16 @@ const formatCurrency = (value) => {
 // Mapeamento manual dos ícones
 const icons = {
   Nascente: {
-    default: require('../assets/icons/nascente.png'),
-    selected: require('../assets/icons/nascente_white.png'),
+    default: require('../../assets/icons/nascente.png'),
+    selected: require('../../assets/icons/nascente_white.png'),
   },
   Poente: {
-    default: require('../assets/icons/poente.png'),
-    selected: require('../assets/icons/poente_white.png'),
+    default: require('../../assets/icons/poente.png'),
+    selected: require('../../assets/icons/poente_white.png'),
   },
   Perpendicular: {
-    default: require('../assets/icons/perpendicular.png'),
-    selected: require('../assets/icons/perpendicular_white.png'),
+    default: require('../../assets/icons/perpendicular.png'),
+    selected: require('../../assets/icons/perpendicular_white.png'),
   },
 };
 
@@ -93,10 +94,23 @@ const OneCadastroImovel = ({ route, navigation }) => {
         foto_app_capa: 'https://cdn.imogo.com.br/img/banner_imovel.png',
       };
 
-      const response = await axios.post('http://192.168.122.9:8000/api/v1/imoveis/', payload);
+      // Imprime o payload para verificar os dados
+      console.log("Payload:", payload);
+
+      const response = await axios.post('http://192.168.1.1:8000/api/v1/imoveis/', payload);
       if (response.status === 200) {
-        Alert.alert('Sucesso', 'Imóvel cadastrado com sucesso');
-        navigation.navigate('Home')(); // Redireciona após o sucesso
+        const { id, usuario_id, status, classificacao, tipo } = response.data;
+
+        // Redireciona para a outra rota, passando os dados relevantes
+        navigation.navigate('PreEnderecoScreen', {
+          id,
+          usuario_id,
+          status, 
+          classificacao,
+          tipo
+        });
+        // navigation.navigate('Home'); // Redireciona após o sucesso
+        Alert.alert('Deu bom', 'Vencemo');
       } else {
         Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o imóvel');
       }
@@ -217,7 +231,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
               {/* Quantos desses quartos são suítes */}
               <View style={styles.row}>
                 <Text style={styles.subLabel} allowFontScaling={false}>Quantos desses quartos são suítes?</Text>
-                <View style={styles.suitesGroup}>
+                <View style={styles.optionGroupSuite}>
                   <TouchableOpacity
                     style={[styles.optionButton, styles.incrementDecrementButton]}
                     onPress={() => handleDecrement(setSuites, suites)}
@@ -495,10 +509,13 @@ const OneCadastroImovel = ({ route, navigation }) => {
 
                 <TouchableOpacity style={styles.laterButton}>
                   <Image
-                    source={require('../assets/icons/bookmark.png')} // Ícone de terminar mais tarde
+                    source={require('../../assets/icons/bookmark.png')} // Ícone de terminar mais tarde
                     style={styles.laterIcon}
                   />
-                  <Text style={styles.laterButtonText} allowFontScaling={false} onPress={handleSaveImovel}>Terminar mais tarde</Text>
+                  <Text style={styles.laterButtonText} allowFontScaling={false}
+                    onPress={() => navigation.navigate('CadastroImovel')}
+
+                  >Terminar mais tarde</Text>
                 </TouchableOpacity>
               </View>
 
@@ -517,13 +534,13 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: width * 0.055
   },
   headerTitle: {
     fontSize: width * 0.05,
     fontWeight: 'bold',
     color: '#1F2024',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   classificacaoText: {
     fontSize: width * 0.045,
@@ -539,13 +556,13 @@ const styles = {
   },
   backButton: {
     position: 'absolute',
-    left: 10,
+    left: 20,
   },
   //
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFF',
-    paddingTop: Platform.OS === 'android' ? 25 : 0,
+    backgroundColor: '#F5F5F5',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 40, // Maior espaçamento para a barra de status
   },
   scrollContainer: {
     paddingVertical: 20,
@@ -563,7 +580,7 @@ const styles = {
     fontSize: Platform.select({ ios: width * 0.037, android: width * 0.035 }),
     fontWeight: '600',
     color: '#1F2024',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   titleLabel: {
     fontSize: Platform.select({ ios: width * 0.057, android: width * 0.055 }),
@@ -579,14 +596,20 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  optionGroupSuite: {
+    marginLeft: Platform.select({ ios: width * -0.01, android: width * 0.01 }),
+    flexDirection: 'row',
+    justifyContent: 'start',
+    alignItems: 'start',
+  },
   optionButton: {
     borderWidth: 1,
     borderColor: '#E9E9E9',
     borderRadius: 25,
     marginHorizontal: 6,
     backgroundColor: '#E9E9E9',
-    width: 44,
-    height: 44,
+    width: Platform.select({ ios: width * 0.11, android: width * 0.11 }),
+    height: Platform.select({ ios: width * 0.11, android: width * 0.11 }),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -609,8 +632,8 @@ const styles = {
     marginTop: 10,
   },
   suitesNumberContainer: {
-    width: 44,
-    height: 44,
+    width: 34,
+    height: 34,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 5,
@@ -718,7 +741,7 @@ const styles = {
     borderColor: '#D3D3D3',
     borderRadius: 10,
     padding: 10,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
     minHeight: 50,
     justifyContent: 'center',
   },
@@ -768,7 +791,7 @@ const styles = {
     paddingVertical: 10,
     paddingHorizontal: 15,
     fontSize: 16,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
   },
   inputContainer: {
     width: '100%',

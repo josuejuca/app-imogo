@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StatusBar, Image, Dimensions, Platform, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ImovelClassificacao from './imovelClassificacao';
-import ImoveisList from './ImoveisList';
+import { useFocusEffect } from '@react-navigation/native'; // Importando useFocusEffect
+import ImovelClassificacao from './modal/imovelClassificacaoModal';
+import ImoveisList from './ImoveisListModal';
 import axios from 'axios'; // Importando axios para fazer a requisição à API
 
 const { width, height } = Dimensions.get('window');
@@ -32,7 +33,7 @@ const Home = ({ route, navigation }) => {
     const fetchUserInfo = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${userId}`);
+            const response = await axios.get(`http://192.168.1.1:8000/api/v1/usuarios/${userId}`);
             setUserInfo(response.data); // Armazena as informações do usuário
         } catch (error) {
             console.error('Erro ao buscar informações do usuário:', error);
@@ -41,12 +42,14 @@ const Home = ({ route, navigation }) => {
         }
     };
 
-    // Hook para buscar os dados do usuário quando a tela for carregada
-    useEffect(() => {
-        if (userId) {
-            fetchUserInfo(); // Chama a função para buscar os dados do usuário
-        }
-    }, [userId]);
+    // Hook para buscar os dados do usuário toda vez que a tela entra em foco
+    useFocusEffect(
+        useCallback(() => {
+            if (userId) {
+                fetchUserInfo(); // Chama a função para buscar os dados do usuário
+            }
+        }, [userId])
+    );
 
     const handleCategorySelect = (selectedCategoria) => {
         setCategoria(selectedCategoria);
@@ -189,8 +192,7 @@ const Home = ({ route, navigation }) => {
             </View>
         </SafeAreaView>
     );
-};
-
+};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 
 // Estilização
 const styles = StyleSheet.create({

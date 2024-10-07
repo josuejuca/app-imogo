@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, 
 
 const { width, height } = Dimensions.get('window');
 
-const PropertyCharacteristics = ({ navigation, route }) => {
+const PreCaracteristicasScreen = ({ navigation, route }) => {
     const { id = null, status = 1, classificacao = '', tipo = '', userID} = route.params || {};
     return (
         
@@ -20,7 +20,7 @@ const PropertyCharacteristics = ({ navigation, route }) => {
             </View>
 
             <Image
-                source={require('../assets/img/stape1.png')} // Substitua pelo caminho correto da imagem
+                source={require('../../assets/img/stape1.png')} // Substitua pelo caminho correto da imagem
                 style={styles.image}
                 resizeMode="contain"
             />
@@ -28,11 +28,7 @@ const PropertyCharacteristics = ({ navigation, route }) => {
             <Text style={styles.title} allowFontScaling={false}>Preencha as características do imóvel</Text>
             <Text style={styles.description} allowFontScaling={false}>
                 Essas informações irão ajudar quem está interessado no seu imóvel a encontrar seu anúncio mais rápido.
-            </Text>
-            <Text style={styles.description} allowFontScaling={false}>
-                {classificacao} - {tipo} | User ID: {userID} 
-            </Text>
-
+            </Text>            
             <TouchableOpacity
                 style={styles.buttonPrimary}
                 onPress={() => navigation.navigate('OneCadastroImovel', {classificacao, tipo, userID})} // Ajuste para a navegação correta
@@ -137,4 +133,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PropertyCharacteristics;
+export default PreCaracteristicasScreen;

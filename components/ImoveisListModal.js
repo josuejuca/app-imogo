@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, ActivityIndicator, RefreshControl } from 'react-native';
 import axios from 'axios'; // Importando axios para fazer a requisição
-import ImovelCard from './ImovelCard';
+import ImovelCard from './ImovelCardModal';
 
 const ImoveisList = ({ userId, navigation }) => {
   const [imoveis, setImoveis] = useState([]);
@@ -11,7 +11,7 @@ const ImoveisList = ({ userId, navigation }) => {
   // Função para buscar os imóveis do usuário
   const fetchImoveis = async () => {
     try {
-      const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${userId}/imoveis?skip=0&limit=100`);
+      const response = await axios.get(`http://192.168.1.1:8000/api/v1/usuarios/${userId}/imoveis?skip=0&limit=100`);
       const fetchedImoveis = response.data.map((imovel) => ({
         id: imovel.id,
         status: imovel.status, // Agora estamos usando IdStatus para o status numérico

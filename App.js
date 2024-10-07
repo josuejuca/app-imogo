@@ -3,18 +3,23 @@ import { StatusBar, ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Welcome from './components/Welcome';
-import SignupScreen from './components/Signup';
-import SignupEmailScreen from './components/SignupEmail';
-import OneCadastroImovel from './components/OneCadastroImovel'; // Etapa 1 
-import SurveyScreen from './components/SignupQuery';
-import SuccessScreen from './components/success';
-import Login from './components/Login';
-import Home from './components/Home';
-import CadastroImovel from './components/CadastroImovel';
-import ProfileScreen from './components/ProfileScreen';
-import PropertyCharacteristics from './components/PropertyCharacteristics';
 
+import Welcome from './components/WelcomeScreen'; // Tela de Bem-vindo 
+import Login from './components/LoginScreen'; // Tela de Login 
+// cadastro
+import SignupScreen from './components/SignupScreen/SignupScreenSeusDados'; // Tela de cadastro ( seus dados )
+import SignupEmailScreen from './components/SignupScreen/SignupScreenEmail'; // Tela de cadastro ( email )
+import SurveyScreen from './components/SignupScreen/SignupScreenQuery'; // Tela de cadastro ( pesquisa )
+import SuccessScreen from './components/SignupScreen/SignupScreenSuccess';
+// fim cadastro 
+
+import OneCadastroImovel from './components/RegisterPropertyScreen/CaracteristicasScreen'; // Etapa 1 
+import Home from './components/HomeScreen';
+import CadastroImovel from './components/RegisterPropertyScreen/CadastroImovelScreen';
+import ProfileScreen from './components/ProfileScreen';
+import PreCaracteristicasScreen from './components/RegisterPropertyScreen/PreCaracteristicasScreen';
+import PreEnderecoScreen from './components/RegisterPropertyScreen/PreEnderecoScreen';
+import EnderecoScreen from './components/RegisterPropertyScreen/EnderecoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -61,7 +66,7 @@ export default function App() {
       />
       <Stack.Navigator initialRouteName={initialRoute}>
         <Stack.Screen 
-          name="Welcome" 
+          name="Welcome"
           component={Welcome} 
           options={{ headerShown: false }} 
         />
@@ -78,8 +83,10 @@ export default function App() {
         />
         <Stack.Screen name='CadastroImovel' component={CadastroImovel} options={{ headerShown: false }} />
         <Stack.Screen name='ProfileScreen' component={ProfileScreen} options={{ headerShown: false }} />
-        <Stack.Screen name='PropertyCharacteristics' component={PropertyCharacteristics} options={{ headerShown: false }} />
+        <Stack.Screen name='PreCaracteristicasScreen' component={PreCaracteristicasScreen} options={{ headerShown: false }} />
         <Stack.Screen name='OneCadastroImovel' component={OneCadastroImovel} options={{ headerShown: false }} />
+        <Stack.Screen name='PreEnderecoScreen' component={PreEnderecoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='EnderecoScreen' component={EnderecoScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

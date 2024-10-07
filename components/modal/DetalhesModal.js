@@ -10,8 +10,8 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
   // Definindo o endpoint da API com base no tipo
   const apiEndpoint =
     type === 'imovel'
-      ? 'http://192.168.122.9:8000/api/v1/caracteristicas_imovel/?skip=0&limit=100'
-      : 'http://192.168.122.9:8000/api/v1/caracteristicas_condominio/?skip=0&limit=100';
+      ? 'http://192.168.1.1:8000/api/v1/caracteristicas_imovel/?skip=0&limit=100'
+      : 'http://192.168.1.1:8000/api/v1/caracteristicas_condominio/?skip=0&limit=100';
 
   // Função para limpar e carregar os dados da API quando o modal for aberto
   useEffect(() => {

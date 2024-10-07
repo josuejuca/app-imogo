@@ -71,7 +71,7 @@ const CadastroImovel = ({ route, navigation }) => {
   const fetchImovelData = async (imovelId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://192.168.122.9:8000/api/v1/imoveis/${imovelId}`);
+      const response = await axios.get(`http://192.168.1.1:8000/api/v1/imoveis/${imovelId}`);
       setImovel(response.data);
     } catch (error) {
       console.error('Erro ao buscar os dados do imóvel:', error);
@@ -88,8 +88,8 @@ const CadastroImovel = ({ route, navigation }) => {
   }, [id]);
 
   const steps = [
-    { label: 'Características', status: 1, view: 'PropertyCharacteristics' },
-    { label: 'Endereço do imóvel', status: 2, view: 'EnderecoView' },
+    { label: 'Características', status: 1, view: 'PreCaracteristicasScreen' },
+    { label: 'Endereço do imóvel', status: 2, view: 'PreEnderecoScreen' },
     { label: 'Dados do proprietário', status: 3, view: 'DadosProprietarioView' },
     { label: 'Foto da CNH', status: 4, view: 'FotoCnhView' },
     { label: 'Selfie do proprietário', status: 5, view: 'SelfieProprietarioView' },
@@ -113,7 +113,7 @@ const CadastroImovel = ({ route, navigation }) => {
       </View>
 
       <Text style={styles.classificacaoText} allowFontScaling={false}>
-        {imovel.classificacao} - {imovel.tipo} - ID: {imovel.id} user: {imovel.status} | usrID: {uID}
+        {imovel.classificacao} - {imovel.tipo}
       </Text>
 
       <View style={styles.stepsContainer}>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    left: 10,
+    left: 20,
   },
   classificacaoText: {
     fontSize: width * 0.045,

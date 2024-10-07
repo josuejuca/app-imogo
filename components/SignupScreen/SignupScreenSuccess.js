@@ -7,7 +7,7 @@ const SuccessScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Image
-                source={require('../assets/img/success.png')}
+                source={require('../../assets/img/success.png')}
                 style={styles.image}
                 resizeMode="contain"
             />
