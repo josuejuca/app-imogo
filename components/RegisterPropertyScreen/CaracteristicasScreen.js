@@ -55,7 +55,7 @@ const icons = {
 };
 
 const OneCadastroImovel = ({ route, navigation }) => {
-  const { id = null, status = 1, classificacao = '', tipo = '', userID } = route.params || {};
+  const { id = null, status = 1, classificacao = '', tipo = '', usuario_id } = route.params || {};
 
   const [quartos, setQuartos] = useState(0);
   const [suites, setSuites] = useState(0);
@@ -75,7 +75,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
   const handleSaveImovel = async () => {
     try {
       const payload = {
-        usuario_id: userID,
+        usuario_id: usuario_id,
         status: 2,
         classificacao: classificacao,
         tipo: tipo,
@@ -97,7 +97,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
       // Imprime o payload para verificar os dados
       console.log("Payload:", payload);
 
-      const response = await axios.post('http://192.168.1.1:8000/api/v1/imoveis/', payload);
+      const response = await axios.post('http://192.168.122.9:8000/api/v1/imoveis/', payload);
       if (response.status === 200) {
         const { id, usuario_id, status, classificacao, tipo } = response.data;
 
@@ -110,7 +110,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
           tipo
         });
         // navigation.navigate('Home'); // Redireciona após o sucesso
-        Alert.alert('Deu bom', 'Vencemo');
+        // Alert.alert('Deu bom', 'Vencemo');
       } else {
         Alert.alert('Erro', 'Ocorreu um erro ao cadastrar o imóvel');
       }
@@ -513,7 +513,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
                     style={styles.laterIcon}
                   />
                   <Text style={styles.laterButtonText} allowFontScaling={false}
-                    onPress={() => navigation.navigate('CadastroImovel')}
+                    onPress={() => navigation.navigate('Home')}
 
                   >Terminar mais tarde</Text>
                 </TouchableOpacity>

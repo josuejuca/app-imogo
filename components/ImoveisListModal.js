@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Text, ActivityIndicator, RefreshControl } f
 import axios from 'axios'; // Importando axios para fazer a requisição
 import ImovelCard from './ImovelCardModal';
 
-const ImoveisList = ({ userId, navigation }) => {
+const ImoveisList = ({ usuario_id, navigation }) => {
   const [imoveis, setImoveis] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false); // Estado para controlar o pull to refresh
@@ -11,9 +11,10 @@ const ImoveisList = ({ userId, navigation }) => {
   // Função para buscar os imóveis do usuário
   const fetchImoveis = async () => {
     try {
-      const response = await axios.get(`http://192.168.1.1:8000/api/v1/usuarios/${userId}/imoveis?skip=0&limit=100`);
+      const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${usuario_id}/imoveis?skip=0&limit=100`);
       const fetchedImoveis = response.data.map((imovel) => ({
         id: imovel.id,
+        usuario_id: imovel.usuario_id,
         status: imovel.status, // Agora estamos usando IdStatus para o status numérico
         imagem: imovel.foto_app_capa,
         valor: imovel.valor_venda ? formatCurrency(imovel.valor_venda) : 'Valor não informado',
@@ -44,7 +45,7 @@ const ImoveisList = ({ userId, navigation }) => {
   // Hook para buscar os imóveis quando o componente é montado
   useEffect(() => {
     fetchImoveis();
-  }, [userId]);
+  }, [usuario_id]);
 
   const renderImovel = ({ item }) => (
     <ImovelCard

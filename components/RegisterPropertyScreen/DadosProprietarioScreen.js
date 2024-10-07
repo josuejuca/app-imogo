@@ -1,95 +1,106 @@
 import React, { useState } from 'react';
-import { Alert, Image, View, Text, TouchableOpacity, TextInput, ScrollView, StatusBar, Dimensions, SafeAreaView, Platform, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import {
+    Alert,
+    Image,
+    View,
+    Text,
+    TouchableOpacity,
+    TextInput,
+    ScrollView,
+    StatusBar,
+    Dimensions,
+    SafeAreaView,
+    Platform,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,
+} from 'react-native';
 import axios from 'axios';
-import Svg, { Path, G, Rect, Mask, Ellipse, ClipPath } from 'react-native-svg';
+import Checkbox from 'expo-checkbox';
+import MaskInput, { Masks } from 'react-native-mask-input'; // Para aplicar máscara no CPF
+import Svg, { Path } from 'react-native-svg';
 const { width } = Dimensions.get('window');
 
 // Ícone de seta para voltar
 const BackArrowIcon = () => (
     <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <Path d="M18.5489 0.939645C19.151 1.52543 19.151 2.47518 18.5489 3.06097L9.36108 12.0003L18.5489 20.9396C19.151 21.5254 19.151 22.4752 18.5489 23.061C17.9469 23.6468 16.9707 23.6468 16.3686 23.061L5.00049 12.0003L16.3686 0.939645C16.9707 0.353859 17.9469 0.353859 18.5489 0.939645Z" fill="#FB7D10" />
+        <Path
+            d="M18.5489 0.939645C19.151 1.52543 19.151 2.47518 18.5489 3.06097L9.36108 12.0003L18.5489 20.9396C19.151 21.5254 19.151 22.4752 18.5489 23.061C17.9469 23.6468 16.9707 23.6468 16.3686 23.061L5.00049 12.0003L16.3686 0.939645C16.9707 0.353859 17.9469 0.353859 18.5489 0.939645Z"
+            fill="#FB7D10"
+        />
     </Svg>
 );
 
-const EnderecoScreen = ({ route, navigation }) => {
+const DadosProprietarioScreen = ({ route, navigation }) => {
     const { id, classificacao = '', tipo = '', usuario_id } = route.params || {};
 
     // Estado dos campos
-    const [cep, setCep] = useState('');
-    const [endereco, setEndereco] = useState('');
-    const [bairro, setBairro] = useState('');
-    const [cidadeUf, setCidadeUf] = useState('');
-    const [complemento, setComplemento] = useState('');
+    const [nomeCompleto, setNomeCompleto] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [estadoCivil, setEstadoCivil] = useState('');
+    const [tipoDocumento, setTipoDocumento] = useState('');
 
-    // Máscara para o CEP
-    const handleCepChange = (text) => {
-        const formattedCep = text.replace(/\D/g, '').replace(/(\d{5})(\d{3})/, '$1-$2');
-        setCep(formattedCep);
-        if (formattedCep.length === 9) {
-            buscaCep(formattedCep);
+    // Meu imovel 
+
+    const [meuImovel, setmeuImovel] = useState(false);
+
+    const togglemeuImovel = () => {
+        setmeuImovel(!meuImovel);
+        if (!meuImovel) {
+            setmeuImovel(true); // Define o valor como 0 quando marcado
+        } else {
+            setmeuImovel(false); // Limpa o valor se desmarcado
         }
     };
 
-    // Busca endereço pelo CEP
-    const buscaCep = async (cep) => {
-        try {
-            const response = await axios.get(`https://viacep.com.br/ws/${cep.replace('-', '')}/json/`);
-            if (response.data) {
-                setEndereco(response.data.logradouro);
-                setBairro(response.data.bairro);
-                setCidadeUf(`${response.data.localidade}/${response.data.uf}`);
-            }
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível buscar o CEP');
-        }
+    // Controle de exibição das listas de opções
+    const [showEstadoCivilOptions, setShowEstadoCivilOptions] = useState(false);
+    const [showTipoDocumentoOptions, setShowTipoDocumentoOptions] = useState(false);
+
+    const estadoCivilOptions = ['Solteiro', 'Casado', 'Viúvo', 'Divorciado', 'Separado'];
+    const tipoDocumentoOptions = ['CNH', 'RG', 'Outros'];
+
+    // Função para selecionar uma opção e fechar a lista
+    const selectEstadoCivil = (option) => {
+        setEstadoCivil(option);
+        setShowEstadoCivilOptions(false);
+    };
+
+    const selectTipoDocumento = (option) => {
+        setTipoDocumento(option);
+        setShowTipoDocumentoOptions(false);
     };
 
     // Validação para habilitar o botão "Salvar"
-    const isFormValid = () => cep && endereco && bairro && cidadeUf;
+    const isFormValid = () => nomeCompleto && cpf && estadoCivil && tipoDocumento;
 
     const handleSaveImovel = async () => {
         if (!isFormValid()) {
             Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
             return;
         }
-
+    
         try {
-            const cidade = cidadeUf.split('/')[0];
-            const uf = cidadeUf.split('/')[1];
-
-            const payload = {
-                cep: cep.replace('-', ''),
-                endereco,
-                complemento,
-                bairro,
-                cidade,
-                uf,
-                status: 3,
-            };
-
-            const response = await axios.put(`http://192.168.122.9:8000/api/v1/imoveis/${id}/endereco`, payload, {
-                headers: {
-                    'accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+            // Requisição PUT para a API
+            const response = await axios.put(`http://192.168.122.9:8000/api/v1/imoveis/${id}/proprietario`, {
+                nome_completo_prop: nomeCompleto,
+                cpf_prop: cpf,
+                estado_civil_prop: estadoCivil,
+                tipo_documento: tipoDocumento,
+                usuario_proprietario: meuImovel,
+                status: 4 // Status do cadastro de proprietário
             });
-
+    
             if (response.status === 200) {
-                const { id, usuario_id, status, classificacao, tipo } = response.data;
-                // Redireciona para a outra rota, passando os dados relevantes
-                navigation.navigate('PreDadosProprietario', {
-                    id,
-                    usuario_id,
-                    status,
-                    classificacao,
-                    tipo
-                });
+                Alert.alert('Sucesso', 'Dados salvos com sucesso!');
+                // Aqui você pode redirecionar para a página principal ou outra view, se necessário
+                navigation.navigate('Home', { usuario_id });
             } else {
-                Alert.alert('Erro', 'Ocorreu um erro ao atualizar o endereço.');
+                Alert.alert('Erro', 'Não foi possível salvar os dados.');
             }
         } catch (error) {
-
-            Alert.alert('Erro', 'Não foi possível atualizar o endereço.');
+            console.error(error);
+            Alert.alert('Erro', 'Houve um problema ao salvar os dados. Tente novamente mais tarde.');
         }
     };
 
@@ -99,78 +110,114 @@ const EnderecoScreen = ({ route, navigation }) => {
                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <BackArrowIcon />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle} allowFontScaling={false}>{classificacao} - {tipo}</Text>
+                <Text style={styles.headerTitle} allowFontScaling={false}>
+                    {classificacao} - {tipo}
+                </Text>
             </View>
             <Text style={styles.classificacaoText} allowFontScaling={false}>
-                Endereço do imóvel
+                Dados do proprietário
             </Text>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.container}>
-                            {/* CEP */}
+                            {/* Checkbox "Eu sou o proprietário deste imóvel" */}
+                            <View style={styles.checkboxRow}>
+                                <Checkbox
+                                    value={meuImovel}
+                                    onValueChange={togglemeuImovel}
+                                    color={meuImovel ? '#FB7D10' : undefined}
+                                />
+                                <Text style={styles.checkboxLabel} allowFontScaling={false} >Eu sou o proprietário deste imóvel</Text>
+                            </View>
+
+                            {/* Nome Completo */}
                             <View style={styles.row}>
-                                <Text style={styles.subLabel} allowFontScaling={false}>CEP</Text>
+                                <Text style={styles.subLabel} allowFontScaling={false}>
+                                    Nome Completo
+                                </Text>
                                 <TextInput
                                     allowFontScaling={false}
                                     style={styles.areaInput}
-                                    placeholder="00000-000"
-                                    value={cep}
-                                    onChangeText={handleCepChange}
+                                    placeholder="Nome Completo"
+                                    value={nomeCompleto}
+                                    onChangeText={setNomeCompleto}
+                                />
+                            </View>
+
+                            {/* CPF com máscara */}
+                            <View style={styles.row}>
+                                <Text style={styles.subLabel} allowFontScaling={false}>
+                                    CPF
+                                </Text>
+                                <MaskInput
+                                    allowFontScaling={false}
+                                    style={styles.areaInput}
+                                    value={cpf}
+                                    onChangeText={setCpf}
+                                    mask={Masks.BRL_CPF}
                                     keyboardType="numeric"
-                                    maxLength={9}
+                                    placeholder="000.000.000-00"
                                 />
                             </View>
 
-                            {/* Endereço */}
+                            {/* Estado Civil */}
                             <View style={styles.row}>
-                                <Text style={styles.subLabel} allowFontScaling={false}>Endereço</Text>
-                                <TextInput
-                                    allowFontScaling={false}
+                                <Text style={styles.subLabel} allowFontScaling={false}>
+                                    Estado Civil
+                                </Text>
+                                <TouchableOpacity
                                     style={styles.areaInput}
-                                    placeholder="Rua, Avenida..."
-                                    value={endereco}
-                                    onChangeText={setEndereco}
-                                />
+                                    onPress={() => setShowEstadoCivilOptions(!showEstadoCivilOptions)}
+                                >
+                                    <Text allowFontScaling={false}>
+                                        {estadoCivil ? estadoCivil : 'Selecionar'}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {showEstadoCivilOptions && (
+                                    <View style={styles.optionsContainer}>
+                                        {estadoCivilOptions.map((option) => (
+                                            <TouchableOpacity
+                                                key={option}
+                                                style={styles.optionItem}
+                                                onPress={() => selectEstadoCivil(option)}
+                                            >
+                                                <Text style={styles.optionText}>{option}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                )}
                             </View>
 
-                            {/* Complemento */}
+                            {/* Tipo de Documento */}
                             <View style={styles.row}>
-                                <Text style={styles.subLabel} allowFontScaling={false}>Complemento (opcional)</Text>
-                                <TextInput
-                                    allowFontScaling={false}
+                                <Text style={styles.subLabel} allowFontScaling={false}>
+                                    Tipo de Documento
+                                </Text>
+                                <TouchableOpacity
                                     style={styles.areaInput}
-                                    placeholder="Apto, Bloco..."
-                                    value={complemento}
-                                    onChangeText={setComplemento}
-                                />
+                                    onPress={() => setShowTipoDocumentoOptions(!showTipoDocumentoOptions)}
+                                >
+                                    <Text allowFontScaling={false}>
+                                        {tipoDocumento ? tipoDocumento : 'Selecionar'}
+                                    </Text>
+                                </TouchableOpacity>
+
+                                {showTipoDocumentoOptions && (
+                                    <View style={styles.optionsContainer}>
+                                        {tipoDocumentoOptions.map((option) => (
+                                            <TouchableOpacity
+                                                key={option}
+                                                style={styles.optionItem}
+                                                onPress={() => selectTipoDocumento(option)}
+                                            >
+                                                <Text style={styles.optionText}>{option}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </View>
+                                )}
                             </View>
-
-                            {/* Bairro */}
-                            <View style={styles.row} >
-                                <Text style={styles.subLabel} allowFontScaling={false}>Bairro</Text>
-                                <TextInput
-                                    allowFontScaling={false}
-                                    style={styles.areaInput}
-                                    placeholder="Bairro"
-                                    value={bairro}
-                                    onChangeText={setBairro}
-                                />
-                            </View>
-
-                            {/* Cidade e UF (combinados em um input) */}
-                            <View style={styles.row}>
-                                <Text style={styles.subLabel} allowFontScaling={false}>Cidade/UF</Text>
-                                <TextInput
-                                    allowFontScaling={false}
-                                    style={styles.areaInput}
-                                    placeholder="Cidade/UF"
-                                    value={cidadeUf}
-                                    onChangeText={setCidadeUf}
-                                />
-                            </View>
-
-
 
                             {/* Botão Salvar */}
                             <View style={styles.buttonContainer}>
@@ -179,16 +226,22 @@ const EnderecoScreen = ({ route, navigation }) => {
                                     onPress={handleSaveImovel}
                                     disabled={!isFormValid()}
                                 >
-                                    <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar endereço ID:{usuario_id}</Text>
+                                    <Text style={styles.saveButtonText} allowFontScaling={false}>
+                                        Salvar
+                                    </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.laterButton}>
                                     <Image
                                         source={require('../../assets/icons/bookmark.png')} // Ícone de terminar mais tarde
                                         style={styles.laterIcon}
                                     />
-                                    <Text style={styles.laterButtonText} allowFontScaling={false}
+                                    <Text
+                                        style={styles.laterButtonText}
+                                        allowFontScaling={false}
                                         onPress={() => navigation.navigate('Home', { usuario_id })}
-                                    >Terminar mais tarde</Text>
+                                    >
+                                        Terminar mais tarde
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -441,18 +494,7 @@ const styles = {
         width: '100%',
     },
 
-    // valores
 
-    checkboxRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    checkboxLabel: {
-        fontSize: 14,
-        color: '#7A7A7A',
-        marginLeft: 10,
-    },
 
     // salvar 
 
@@ -471,7 +513,7 @@ const styles = {
     checkboxRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: 10,
+        marginBottom: 20
     },
     checkboxLabel: {
         fontSize: 14,
@@ -510,6 +552,23 @@ const styles = {
         fontSize: Platform.select({ ios: width * 0.04, android: width * 0.04 }), // Ajuste no tamanho da fonte
         fontWeight: '600',
     },
+    // input que abre 
+
+    optionsContainer: {
+        backgroundColor: '#F5F5F5',
+        borderColor: '#D3D3D3',
+        borderWidth: 1,
+        borderRadius: 10,
+        marginTop: 5,
+    },
+    optionItem: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+    },
+    optionText: {
+        fontSize: 16,
+        color: '#1F2024',
+    },
 };
 
-export default EnderecoScreen;
+export default DadosProprietarioScreen;

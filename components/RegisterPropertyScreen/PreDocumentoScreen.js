@@ -1,39 +1,80 @@
-import React, { useId, useReducer } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView,StatusBar } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, SafeAreaView, StatusBar } from 'react-native';
+import axios from 'axios'; // Usando Axios para fazer a requisição
 
 const { width, height } = Dimensions.get('window');
 
-const PreEnderecoScreen = ({ navigation, route }) => {
-    const { id = null, status, classificacao = '', tipo = '', usuario_id} = route.params || {};
+const PreDocumentoScreen = ({ navigation, route }) => {
+    const { id } = route.params || {}; // Pegando o ID da rota
+    const [documento, setDocumento] = useState(null);
+    const [usuarioId, setUsuarioId] = useState(null);
+    const [textoDocumento, setTextoDocumento] = useState("Envie seu documento de identidade");
+
+    // Função para buscar os dados do imóvel pela API
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get(`http://192.168.122.9:8000/api/v1/imoveis/${id}`);
+                const { tipo_documento, usuario_id, classificacao, tipo } = response.data;
+
+                // Ajusta o texto e define o usuário
+                setUsuarioId(usuario_id);
+                if (tipo_documento === 'CNH') {
+                    setTextoDocumento("Envie sua CNH");
+                } else {
+                    setTextoDocumento("Envie seu documento de identidade");
+                }
+
+                // Armazena o documento completo para navegações futuras
+                setDocumento(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar os dados do imóvel:", error);
+            }
+        };
+
+        fetchData();
+    }, [id]);
+
+    // Função para manipular a navegação com base no tipo de documento
+    const handleNext = () => {
+        if (documento?.tipo_documento === 'CNH') {
+            navigation.navigate('FotoCNHScreen', { id, usuario_id: usuarioId, classificacao: documento.classificacao, tipo: documento.tipo });
+        } else {
+            navigation.navigate('FotoDocumentoScreen', { id, usuario_id: usuarioId, classificacao: documento.classificacao, tipo: documento.tipo });
+        }
+    };
+
+   
+
     return (
-        
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
             <View style={styles.progressBarContainer}>
+                <View style={styles.progressSegmentFilled}></View>
+                <View style={styles.progressSegmentFilled}></View>
                 <View style={styles.progressSegmentFilled}></View>
                 <View style={styles.progressSegmentHalfFilled}>
                     <View style={styles.progressSegmentHalfFilledInner}></View>
                 </View>
                 <View style={styles.progressSegment}></View>
-                <View style={styles.progressSegment}></View>
-                <View style={styles.progressSegment}></View>
             </View>
 
             <Image
-                source={require('../../assets/img/stape2.png')} // Substitua pelo caminho correto da imagem
+                source={require('../../assets/img/stape3.png')} // Substitua pelo caminho correto da imagem
                 style={styles.image}
                 resizeMode="contain"
             />
 
-            <Text style={styles.title} allowFontScaling={false}>Agora preencha o endereço do imóvel</Text>
+            <Text style={styles.title} allowFontScaling={false}>{textoDocumento}</Text>
             <Text style={styles.description} allowFontScaling={false}>
-                [Espaço reservado para o texto] #{id}
-             </Text>            
+                Precisamos checar a sua identidade para concluir o seu cadastro #{id} | @{usuarioId}
+            </Text>
+
             <TouchableOpacity
                 style={styles.buttonPrimary}
-                onPress={() => navigation.navigate('EnderecoScreen', {id, classificacao, tipo, usuario_id, usuario_id, status})} // Ajuste para a navegação correta
+                onPress={handleNext} // Manipulando a navegação com base no documento
             >
-                <Text style={styles.buttonText} allowFontScaling={false}>Preencher endereço</Text>
+                <Text style={styles.buttonText} allowFontScaling={false}>Próximo</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -133,4 +174,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PreEnderecoScreen;
+export default PreDocumentoScreen;

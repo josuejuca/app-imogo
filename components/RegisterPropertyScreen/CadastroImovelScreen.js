@@ -55,7 +55,7 @@ const CheckIcon = () => (
 );
 
 const CadastroImovel = ({ route, navigation }) => {
-  const { id = null, status = 1, classificacao = '', tipo = '', uID } = route.params || {};
+  const { id = null, status = 1, classificacao = '', tipo = '', usuario_id } = route.params || {};
   
   // Estado para armazenar os dados do imóvel
   const [imovel, setImovel] = useState({
@@ -63,7 +63,7 @@ const CadastroImovel = ({ route, navigation }) => {
     status,
     classificacao,
     tipo,
-    usuario_id: uID,
+    usuario_id: usuario_id,
   });
   const [loading, setLoading] = useState(false);
 
@@ -71,7 +71,7 @@ const CadastroImovel = ({ route, navigation }) => {
   const fetchImovelData = async (imovelId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://192.168.1.1:8000/api/v1/imoveis/${imovelId}`);
+      const response = await axios.get(`http://192.168.122.9:8000/api/v1/imoveis/${imovelId}`);
       setImovel(response.data);
     } catch (error) {
       console.error('Erro ao buscar os dados do imóvel:', error);
@@ -90,8 +90,8 @@ const CadastroImovel = ({ route, navigation }) => {
   const steps = [
     { label: 'Características', status: 1, view: 'PreCaracteristicasScreen' },
     { label: 'Endereço do imóvel', status: 2, view: 'PreEnderecoScreen' },
-    { label: 'Dados do proprietário', status: 3, view: 'DadosProprietarioView' },
-    { label: 'Foto da CNH', status: 4, view: 'FotoCnhView' },
+    { label: 'Dados do proprietário', status: 3, view: 'PreDadosProprietario' },
+    { label: 'Foto do Documento', status: 4, view: 'PreDocumentoScreen' },
     { label: 'Selfie do proprietário', status: 5, view: 'SelfieProprietarioView' },
   ];
 
@@ -130,7 +130,7 @@ const CadastroImovel = ({ route, navigation }) => {
                   id: imovel.id,
                   classificacao: imovel.classificacao,
                   tipo: imovel.tipo,
-                  userID: uID
+                  usuario_id: usuario_id
                 });
               }
             }}

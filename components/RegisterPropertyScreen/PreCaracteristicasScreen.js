@@ -4,7 +4,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, 
 const { width, height } = Dimensions.get('window');
 
 const PreCaracteristicasScreen = ({ navigation, route }) => {
-    const { id = null, status = 1, classificacao = '', tipo = '', userID} = route.params || {};
+    const { id = null, status = 1, classificacao = '', tipo = '', usuario_id} = route.params || {};
     return (
         
         <SafeAreaView style={styles.container}>
@@ -31,7 +31,7 @@ const PreCaracteristicasScreen = ({ navigation, route }) => {
             </Text>            
             <TouchableOpacity
                 style={styles.buttonPrimary}
-                onPress={() => navigation.navigate('OneCadastroImovel', {classificacao, tipo, userID})} // Ajuste para a navegação correta
+                onPress={() => navigation.navigate('OneCadastroImovel', {classificacao, tipo, usuario_id})} // Ajuste para a navegação correta
             >
                 <Text style={styles.buttonText} allowFontScaling={false}>Inserir características</Text>
             </TouchableOpacity>

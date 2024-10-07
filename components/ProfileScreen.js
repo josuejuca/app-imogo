@@ -6,8 +6,8 @@ const ProfileScreen = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      // Remove o userId do AsyncStorage ao sair
-      await AsyncStorage.removeItem('userId');
+      // Remove o usuario_id do AsyncStorage ao sair
+      await AsyncStorage.removeItem('usuario_id');
       // Redefine a navegação e define "Login" como a única tela no histórico
       navigation.reset({
         index: 0,

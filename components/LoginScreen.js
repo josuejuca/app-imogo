@@ -42,9 +42,9 @@ const Login = ({ navigation }) => {
   };
 
   // Função para salvar login no AsyncStorage
-  const saveLoginInfo = async (userId) => {
+  const saveLoginInfo = async (usuario_id) => {
     try {
-      await AsyncStorage.setItem('userId', userId);
+      await AsyncStorage.setItem('usuario_id', usuario_id);
     } catch (error) {
       console.error('Error saving user ID', error);
     }
@@ -52,7 +52,7 @@ const Login = ({ navigation }) => {
   // Função para remover o login do AsyncStorage
   const removeLoginInfo = async () => {
     try {
-      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('usuario_id');
     } catch (error) {
       console.error('Error removing user ID', error);
     }
@@ -62,7 +62,7 @@ const Login = ({ navigation }) => {
   // Função para lidar com o login via API utilizando axios
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.1.1:8000/login', {
+      const response = await axios.post('http://192.168.122.9:8000/login', {
         email: email,
         senha: password,
       });
@@ -74,17 +74,17 @@ const Login = ({ navigation }) => {
         // Verifique se o usuario_id existe
         if (data.usuario_id) {
           if (remember) {
-            console.log('Salvando userId:', data.usuario_id);
-            await AsyncStorage.setItem('userId', String(data.usuario_id)); // Salva o userId no AsyncStorage
+            console.log('Salvando usuario_id:', data.usuario_id);
+            await AsyncStorage.setItem('usuario_id', String(data.usuario_id)); // Salva o usuario_id no AsyncStorage
           } else {
-            console.log('Removendo userId');
-            await removeLoginInfo(); // Remove o userId se "Lembrar senha" não estiver marcado
+            console.log('Removendo usuario_id');
+            await removeLoginInfo(); // Remove o usuario_id se "Lembrar senha" não estiver marcado
           }
 
           // Redefine a navegação e define "Home" como a única tela no histórico
           navigation.reset({
             index: 0,
-            routes: [{ name: 'Home', params: { userId: data.usuario_id } }],
+            routes: [{ name: 'Home', params: { usuario_id: data.usuario_id } }],
           });
         } else {
           Alert.alert('Erro de Login', 'ID de usuário não encontrado. Tente novamente.');

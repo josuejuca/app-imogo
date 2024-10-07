@@ -20,23 +20,26 @@ import ProfileScreen from './components/ProfileScreen';
 import PreCaracteristicasScreen from './components/RegisterPropertyScreen/PreCaracteristicasScreen';
 import PreEnderecoScreen from './components/RegisterPropertyScreen/PreEnderecoScreen';
 import EnderecoScreen from './components/RegisterPropertyScreen/EnderecoScreen';
-
+import PreDadosProprietario from './components/RegisterPropertyScreen/PreDadosProprietarioScreen';
+import DadosProprietarioScreen from './components/RegisterPropertyScreen/DadosProprietarioScreen';
+import PreDocumentoScreen from './components/RegisterPropertyScreen/PreDocumentoScreen';
+import FotoCNHScreen from './components/RegisterPropertyScreen/FotoCNHScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [initialRoute, setInitialRoute] = useState(null); // Estado para armazenar a rota inicial
-  const [userId, setUserId] = useState(null); // Estado para armazenar o userId
+  const [usuario_id, setusuario_id] = useState(null); // Estado para armazenar o usuario_id
 
   useEffect(() => {
     // Verifica se o usuário já fez login
     const checkLoginStatus = async () => {
       try {
-        const storedUserId = await AsyncStorage.getItem('userId'); // Pega o userId salvo no AsyncStorage
-        if (storedUserId) {
-          setUserId(storedUserId); // Armazena o userId no estado
+        const storedusuario_id = await AsyncStorage.getItem('usuario_id'); // Pega o usuario_id salvo no AsyncStorage
+        if (storedusuario_id) {
+          setusuario_id(storedusuario_id); // Armazena o usuario_id no estado
           setInitialRoute('Home'); // Define a rota inicial como Home
         } else {
-          setInitialRoute('Welcome'); // Redireciona para Welcome se o userId não existir
+          setInitialRoute('Welcome'); // Redireciona para Welcome se o usuario_id não existir
         }
       } catch (error) {
         console.error('Erro ao verificar o status de login:', error);
@@ -79,7 +82,7 @@ export default function App() {
           name='Home' 
           component={Home} 
           options={{ headerShown: false }} 
-          initialParams={{ userId }} // Passa o userId como parâmetro inicial para a Home
+          initialParams={{ usuario_id }} // Passa o usuario_id como parâmetro inicial para a Home
         />
         <Stack.Screen name='CadastroImovel' component={CadastroImovel} options={{ headerShown: false }} />
         <Stack.Screen name='ProfileScreen' component={ProfileScreen} options={{ headerShown: false }} />
@@ -87,6 +90,10 @@ export default function App() {
         <Stack.Screen name='OneCadastroImovel' component={OneCadastroImovel} options={{ headerShown: false }} />
         <Stack.Screen name='PreEnderecoScreen' component={PreEnderecoScreen} options={{ headerShown: false }} />
         <Stack.Screen name='EnderecoScreen' component={EnderecoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='PreDadosProprietario' component={PreDadosProprietario} options={{ headerShown: false }} />
+        <Stack.Screen name='DadosProprietario' component={DadosProprietarioScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='PreDocumentoScreen' component={PreDocumentoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='FotoCNHScreen' component={FotoCNHScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

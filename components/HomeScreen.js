@@ -10,7 +10,7 @@ import axios from 'axios'; // Importando axios para fazer a requisição à API
 const { width, height } = Dimensions.get('window');
 
 const Home = ({ route, navigation }) => {
-    const { userId } = route.params || {}; // Obtendo o ID do usuário vindo da tela anterior
+    const { usuario_id } = route.params || {}; // Obtendo o ID do usuário vindo da tela anterior
 
     const [userInfo, setUserInfo] = useState(null); // Estado para armazenar as informações do usuário
     const [loading, setLoading] = useState(true); // Estado de carregamento
@@ -19,21 +19,21 @@ const Home = ({ route, navigation }) => {
     const [categoria, setCategoria] = useState('');
     const [tipoImovel, setTipoImovel] = useState('');
 
-    // Se o userId for indefinido, redireciona o usuário para a tela de login
+    // Se o usuario_id for indefinido, redireciona o usuário para a tela de login
     useEffect(() => {
-        if (!userId) {
+        if (!usuario_id) {
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' }],
             });
         }
-    }, [userId, navigation]);
+    }, [usuario_id, navigation]);
 
     // Função para buscar os dados do usuário
     const fetchUserInfo = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://192.168.1.1:8000/api/v1/usuarios/${userId}`);
+            const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${usuario_id}`);
             setUserInfo(response.data); // Armazena as informações do usuário
         } catch (error) {
             console.error('Erro ao buscar informações do usuário:', error);
@@ -45,10 +45,10 @@ const Home = ({ route, navigation }) => {
     // Hook para buscar os dados do usuário toda vez que a tela entra em foco
     useFocusEffect(
         useCallback(() => {
-            if (userId) {
+            if (usuario_id) {
                 fetchUserInfo(); // Chama a função para buscar os dados do usuário
             }
-        }, [userId])
+        }, [usuario_id])
     );
 
     const handleCategorySelect = (selectedCategoria) => {
@@ -116,7 +116,7 @@ const Home = ({ route, navigation }) => {
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        <ImoveisList userId={userId} navigation={navigation} />
+                        <ImoveisList usuario_id={usuario_id} navigation={navigation} />
                     )}
                 </View>
 
@@ -134,21 +134,21 @@ const Home = ({ route, navigation }) => {
                             </TouchableOpacity>
                             <Text style={styles.modalTitle} allowFontScaling={false}>Escolha a categoria do imóvel</Text>
                             <View style={styles.categoryContainer}>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Residencial', userId)}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Residencial', usuario_id)}>
                                     <Image
                                         source={require('../assets/img/residencial.png')}
                                         style={styles.categoryIcon}
                                     />
                                     <Text style={styles.categoryText} allowFontScaling={false}>Residencial</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Comercial', userId)}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Comercial', usuario_id)}>
                                     <Image
                                         source={require('../assets/img/comercial.png')}
                                         style={styles.categoryIcon}
                                     />
                                     <Text style={styles.categoryText} allowFontScaling={false}>Comercial</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Outro', userId)}>
+                                <TouchableOpacity style={styles.categoryButton} onPress={() => handleCategorySelect('Outro', usuario_id)}>
                                     <Image
                                         source={require('../assets/img/outro.png')}
                                         style={styles.categoryIcon}
@@ -165,14 +165,14 @@ const Home = ({ route, navigation }) => {
                     modalVisible={classificationModalVisible}
                     setModalVisible={setClassificationModalVisible}
                     categoria={categoria}
-                    userId={userId}
+                    usuario_id={usuario_id}
                     setSelectedTipo={setTipoImovel}
                     navigation={navigation}
                 />
 
                 {/* Footer fixo */}
                 <View style={styles.footerContainer}>
-                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('Home', { userId })}>
+                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('Home', { usuario_id })}>
                         <Ionicons name="home" size={24} color="#FF7A00" />
                         <Text style={styles.footerItemTextActive} allowFontScaling={false}>Meus imóveis</Text>
                     </TouchableOpacity>

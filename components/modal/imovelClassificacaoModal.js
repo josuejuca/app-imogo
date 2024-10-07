@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
-const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigation, userId }) => {
+const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigation, usuario_id }) => {
  
   const tiposPorCategoria = {
     Residencial: [
@@ -30,7 +30,7 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigat
       'Rural'
     ]
   };
-  console.log("A", userId)
+  console.log("A", usuario_id)
   const tipos = tiposPorCategoria[categoria] || ['Selecionar'];
  
   const [selectedTipo, setSelectedTipoLocal] = useState('Selecionar');
@@ -59,7 +59,7 @@ const ImovelClassificacao = ({ modalVisible, setModalVisible, categoria, navigat
         status: 1, // status inicial
         classificacao: categoria, // categoria selecionada pelo usuário
         tipo: selectedTipo, // tipo selecionado pelo usuário
-        uID: userId
+        usuario_id: usuario_id
       });
 
       // Resetar o valor selecionado após a navegação para garantir que na próxima vez estará limpo

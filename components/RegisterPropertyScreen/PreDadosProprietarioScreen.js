@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Platform, 
 
 const { width, height } = Dimensions.get('window');
 
-const PreEnderecoScreen = ({ navigation, route }) => {
+const PreDadosProprietario = ({ navigation, route }) => {
     const { id = null, status, classificacao = '', tipo = '', usuario_id} = route.params || {};
     return (
         
@@ -11,29 +11,29 @@ const PreEnderecoScreen = ({ navigation, route }) => {
             <StatusBar barStyle="dark-content" />
             <View style={styles.progressBarContainer}>
                 <View style={styles.progressSegmentFilled}></View>
+                <View style={styles.progressSegmentFilled}></View>
                 <View style={styles.progressSegmentHalfFilled}>
                     <View style={styles.progressSegmentHalfFilledInner}></View>
                 </View>
                 <View style={styles.progressSegment}></View>
                 <View style={styles.progressSegment}></View>
-                <View style={styles.progressSegment}></View>
             </View>
 
             <Image
-                source={require('../../assets/img/stape2.png')} // Substitua pelo caminho correto da imagem
+                source={require('../../assets/img/stape3.png')} // Substitua pelo caminho correto da imagem
                 style={styles.image}
                 resizeMode="contain"
             />
 
-            <Text style={styles.title} allowFontScaling={false}>Agora preencha o endereço do imóvel</Text>
+            <Text style={styles.title} allowFontScaling={false}>Dados do proprietário</Text>
             <Text style={styles.description} allowFontScaling={false}>
-                [Espaço reservado para o texto] #{id}
+                [Espaço reservado para o texto] #{id} | @{usuario_id}
              </Text>            
             <TouchableOpacity
                 style={styles.buttonPrimary}
-                onPress={() => navigation.navigate('EnderecoScreen', {id, classificacao, tipo, usuario_id, usuario_id, status})} // Ajuste para a navegação correta
+                onPress={() => navigation.navigate('DadosProprietario', {id, classificacao, tipo, usuario_id, status})} // Ajuste para a navegação correta
             >
-                <Text style={styles.buttonText} allowFontScaling={false}>Preencher endereço</Text>
+                <Text style={styles.buttonText} allowFontScaling={false}>Preencher dados cadastrais</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );
@@ -133,4 +133,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default PreEnderecoScreen;
+export default PreDadosProprietario;
