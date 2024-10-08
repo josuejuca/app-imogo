@@ -32,7 +32,7 @@ const BackArrowIcon = () => (
 );
 
 const DadosProprietarioScreen = ({ route, navigation }) => {
-    const { id, classificacao = '', tipo = '', usuario_id } = route.params || {};
+    const { id, classificacao = '', tipo = '', usuario_id, status } = route.params || {};
 
     // Estado dos campos
     const [nomeCompleto, setNomeCompleto] = useState('');
@@ -92,9 +92,15 @@ const DadosProprietarioScreen = ({ route, navigation }) => {
             });
     
             if (response.status === 200) {
-                Alert.alert('Sucesso', 'Dados salvos com sucesso!');
+                // Alert.alert('Sucesso', 'Dados salvos com sucesso!');
                 // Aqui você pode redirecionar para a página principal ou outra view, se necessário
-                navigation.navigate('Home', { usuario_id });
+                navigation.navigate('CadastroImovel', {
+                    id,
+                    usuario_id,
+                    status: response.status,
+                    classificacao,
+                    tipo
+                });
             } else {
                 Alert.alert('Erro', 'Não foi possível salvar os dados.');
             }

@@ -100,9 +100,9 @@ const OneCadastroImovel = ({ route, navigation }) => {
       const response = await axios.post('http://192.168.122.9:8000/api/v1/imoveis/', payload);
       if (response.status === 200) {
         const { id, usuario_id, status, classificacao, tipo } = response.data;
-
+        console.log("Status (caracteristicas): ", status)
         // Redireciona para a outra rota, passando os dados relevantes
-        navigation.navigate('PreEnderecoScreen', {
+        navigation.navigate('CadastroImovel', {
           id,
           usuario_id,
           status, 
@@ -513,7 +513,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
                     style={styles.laterIcon}
                   />
                   <Text style={styles.laterButtonText} allowFontScaling={false}
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Home', {usuario_id})}
 
                   >Terminar mais tarde</Text>
                 </TouchableOpacity>

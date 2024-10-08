@@ -23,7 +23,9 @@ import EnderecoScreen from './components/RegisterPropertyScreen/EnderecoScreen';
 import PreDadosProprietario from './components/RegisterPropertyScreen/PreDadosProprietarioScreen';
 import DadosProprietarioScreen from './components/RegisterPropertyScreen/DadosProprietarioScreen';
 import PreDocumentoScreen from './components/RegisterPropertyScreen/PreDocumentoScreen';
-import FotoCNHScreen from './components/RegisterPropertyScreen/FotoCNHScreen';
+import TipoFotoScreen from './components/RegisterPropertyScreen/TipoFotoScreen';
+import FotoQRScreen from './components/RegisterPropertyScreen/FotoQRScreen';
+import FotoInteraScreen from './components/RegisterPropertyScreen/FotoInteraScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -93,7 +95,9 @@ export default function App() {
         <Stack.Screen name='PreDadosProprietario' component={PreDadosProprietario} options={{ headerShown: false }} />
         <Stack.Screen name='DadosProprietario' component={DadosProprietarioScreen} options={{ headerShown: false }} />
         <Stack.Screen name='PreDocumentoScreen' component={PreDocumentoScreen} options={{ headerShown: false }} />
-        <Stack.Screen name='FotoCNHScreen' component={FotoCNHScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='TipoFotoScreen' component={TipoFotoScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='FotoQRScreen' component={FotoQRScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='FotoInteraScreen' component={FotoInteraScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

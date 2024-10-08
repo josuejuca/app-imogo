@@ -8,7 +8,7 @@ const PreDocumentoScreen = ({ navigation, route }) => {
     const { id } = route.params || {}; // Pegando o ID da rota
     const [documento, setDocumento] = useState(null);
     const [usuarioId, setUsuarioId] = useState(null);
-    const [textoDocumento, setTextoDocumento] = useState("Envie seu documento de identidade");
+    const [textoDocumento, setTextoDocumento] = useState('...');
 
     // Função para buscar os dados do imóvel pela API
     useEffect(() => {
@@ -38,13 +38,11 @@ const PreDocumentoScreen = ({ navigation, route }) => {
     // Função para manipular a navegação com base no tipo de documento
     const handleNext = () => {
         if (documento?.tipo_documento === 'CNH') {
-            navigation.navigate('FotoCNHScreen', { id, usuario_id: usuarioId, classificacao: documento.classificacao, tipo: documento.tipo });
+            navigation.navigate('TipoFotoScreen', { id, usuario_id: documento.usuario_id, classificacao: documento.classificacao, tipo: documento.tipo, tipo_documento: documento.tipo_documento });
         } else {
-            navigation.navigate('FotoDocumentoScreen', { id, usuario_id: usuarioId, classificacao: documento.classificacao, tipo: documento.tipo });
+            navigation.navigate('FotoDocumentoScreen', { id, usuario_id: documento.usuario_id, classificacao: documento.classificacao, tipo: documento.tipo, tipo_documento: documento.tipo_documento });
         }
     };
-
-   
 
     return (
         <SafeAreaView style={styles.container}>

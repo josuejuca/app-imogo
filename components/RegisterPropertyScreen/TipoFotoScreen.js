@@ -35,13 +35,13 @@ const BackArrowIcon = () => (
     </Svg>
 );
 
-const FotoCNHScreen = ({ route, navigation }) => {
-    const { id, classificacao = '', tipo = '', usuario_id } = route.params || {};
+const TipoFotoScreen = ({ route, navigation }) => {
+    const { id, classificacao = '', tipo = '', usuario_id, tipo_documento } = route.params || {};
 
     const [modalVisible, setModalVisible] = useState(false); // Estado para controlar a visibilidade do modal
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar o arquivo selecionado
     const [selectedDocument, setSelectedDocument] = useState(null); // Estado para armazenar o documento selecionado
-
+    const [galeria, setGaleria] = useState(false);
     // Função para abrir o modal
     const openModal = () => {
         setModalVisible(true);
@@ -52,93 +52,30 @@ const FotoCNHScreen = ({ route, navigation }) => {
         setModalVisible(false);
     };
 
-    // Estado dos campos
-    const [nomeCompleto, setNomeCompleto] = useState('');
-    const [cpf, setCpf] = useState('');
-    const [estadoCivil, setEstadoCivil] = useState('');
-    const [tipoDocumento, setTipoDocumento] = useState('');
-
-    // Meu imovel 
-    const [meuImovel, setmeuImovel] = useState(false);
-
-    const togglemeuImovel = () => {
-        setmeuImovel(!meuImovel);
-    };
-
-    // Controle de exibição das listas de opções
-    const [showEstadoCivilOptions, setShowEstadoCivilOptions] = useState(false);
-    const [showTipoDocumentoOptions, setShowTipoDocumentoOptions] = useState(false);
-
-    const estadoCivilOptions = ['Solteiro', 'Casado', 'Viúvo', 'Divorciado', 'Separado'];
-    const tipoDocumentoOptions = ['CNH', 'RG', 'Outros'];
-
-    // Função para selecionar uma opção e fechar a lista
-    const selectEstadoCivil = (option) => {
-        setEstadoCivil(option);
-        setShowEstadoCivilOptions(false);
-    };
-
-    const selectTipoDocumento = (option) => {
-        setTipoDocumento(option);
-        setShowTipoDocumentoOptions(false);
-    };
-
-    // Validação para habilitar o botão "Salvar"
-    const isFormValid = () => nomeCompleto && cpf && estadoCivil && tipoDocumento;
-
-    const handleSaveImovel = async () => {
-        if (!isFormValid()) {
-            Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
-            return;
-        }
-
-        try {
-            // Requisição PUT para a API
-            const response = await axios.put(`http://192.168.122.9:8000/api/v1/imoveis/${id}/proprietario`, {
-                nome_completo_prop: nomeCompleto,
-                cpf_prop: cpf,
-                estado_civil_prop: estadoCivil,
-                tipo_documento: tipoDocumento,
-                usuario_proprietario: meuImovel,
-                status: 4 // Status do cadastro de proprietário
-            });
-
-            if (response.status === 200) {
-                Alert.alert('Sucesso', 'Dados salvos com sucesso!');
-                // Aqui você pode redirecionar para a página principal ou outra view, se necessário
-                navigation.navigate('Home', { usuario_id });
-            } else {
-                Alert.alert('Erro', 'Não foi possível salvar os dados.');
-            }
-        } catch (error) {
-            console.error(error);
-            Alert.alert('Erro', 'Houve um problema ao salvar os dados. Tente novamente mais tarde.');
-        }
-    };
 
     // Função para abrir a galeria e permitir o upload do arquivo (imagem)
     const pickImage = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
         if (permissionResult.granted === false) {
             Alert.alert("Permissão negada", "É necessária a permissão para acessar a galeria.");
             return;
         }
-    
+
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images, // Apenas imagens
             allowsEditing: true,
             aspect: [4, 3],
             quality: 1,
         });
-    
+
         // Verificar se o usuário cancelou a seleção e se há uma imagem selecionada
         if (!result.canceled && result.assets.length > 0) {
             const imageUri = result.assets[0].uri;
             setSelectedImage(imageUri); // Armazenar o URI da imagem
             closeModal(); // Fechar o modal
             // Exibir o URI da imagem no console
-            console.log({ imageUri });
+            console.log({ imageUri, id, classificacao, tipo, usuario_id });
             // navigation.navigate('NextView', { imageUri });
         }
     };
@@ -156,6 +93,12 @@ const FotoCNHScreen = ({ route, navigation }) => {
             // Redirecionar para a próxima view, passando o documento
             navigation.navigate('NextView', { documentUri: result.uri });
         }
+    };
+
+    const handleNext = (galeriaAtualizada) => {
+        navigation.navigate('FotoQRScreen', { tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada  });
+        closeModal(); // Fechar o modal
+        console.log({tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada})
     };
 
     return (
@@ -194,7 +137,7 @@ const FotoCNHScreen = ({ route, navigation }) => {
                                         </View>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={styles.optionButton}>
+                                    <TouchableOpacity style={styles.optionButton} onPress={() => {handleNext(false);}}>
                                         <Image
                                             source={require('../../assets/icons/foto_camera.png')} // Ícone de "Tirar uma foto"
                                             style={styles.optionIcon}
@@ -225,9 +168,9 @@ const FotoCNHScreen = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                                 <Text style={styles.modalTitle} allowFontScaling={false}>Escolha um formato</Text>
 
-                                                <TouchableOpacity style={styles.modalOptionButton} onPress={pickImage}>
+                                                <TouchableOpacity style={styles.modalOptionButton} onPress={() => {handleNext(true);}}>
                                                     <Image
-                                                        source={require('../../assets/icons/arquivo.png')} // Imagem do arquivo
+                                                        source={require('../../assets/icons/imagem_galeria.png')} // Imagem do arquivo
                                                         style={styles.modalIcon}
                                                     />
                                                     <View style={styles.modalOptionTextContainer}>
@@ -240,7 +183,7 @@ const FotoCNHScreen = ({ route, navigation }) => {
 
                                                 <TouchableOpacity style={styles.modalOptionButton} onPress={pickDocument}>
                                                     <Image
-                                                        source={require('../../assets/icons/imagem_galeria.png')} // Ícone de documento
+                                                        source={require('../../assets/icons/arquivo.png')} // Ícone de documento
                                                         style={styles.modalIcon}
                                                     />
                                                     <View style={styles.modalOptionTextContainer}>
@@ -702,4 +645,4 @@ const styles = {
     },
 };
 
-export default FotoCNHScreen;
+export default TipoFotoScreen;

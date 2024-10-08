@@ -57,17 +57,9 @@ const CheckIcon = () => (
 const CadastroImovel = ({ route, navigation }) => {
   const { id = null, status = 1, classificacao = '', tipo = '', usuario_id } = route.params || {};
   
-  // Estado para armazenar os dados do imóvel
-  const [imovel, setImovel] = useState({
-    id,
-    status,
-    classificacao,
-    tipo,
-    usuario_id: usuario_id,
-  });
+  const [imovel, setImovel] = useState({ id, status, classificacao, tipo, usuario_id });
   const [loading, setLoading] = useState(false);
 
-  // Função para buscar os dados do imóvel
   const fetchImovelData = async (imovelId) => {
     setLoading(true);
     try {
@@ -80,12 +72,39 @@ const CadastroImovel = ({ route, navigation }) => {
     }
   };
 
-  // Hook para buscar os dados do imóvel quando o ID estiver presente
+  // Atualizar status do imóvel quando o id ou o status for alterado
   useEffect(() => {
     if (id) {
       fetchImovelData(id);
     }
-  }, [id]);
+  }, [id, status]);
+
+  const updateStatus = async (newStatus) => {
+    try {
+      const response = await axios.patch(`http://192.168.122.9:8000/api/v1/imoveis/${id}`, {
+        status: newStatus
+      });
+      setImovel((prevImovel) => ({
+        ...prevImovel,
+        status: response.data.status
+      }));
+    } catch (error) {
+      console.error('Erro ao atualizar o status do imóvel:', error);
+    }
+  };
+
+  const handleStepNavigation = (step) => {
+    if (imovel.status === step.status) {
+      navigation.navigate(step.view, {
+        etapa: step.label,
+        status: step.status,
+        id: imovel.id,
+        classificacao: imovel.classificacao,
+        tipo: imovel.tipo,
+        usuario_id: usuario_id
+      });
+    }
+  };
 
   const steps = [
     { label: 'Características', status: 1, view: 'PreCaracteristicasScreen' },
@@ -103,10 +122,12 @@ const CadastroImovel = ({ route, navigation }) => {
     );
   }
 
+  console.log("Status (view de cadastro): ", imovel.status);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home', {usuario_id})} style={styles.backButton}>
           <BackArrowIcon />
         </TouchableOpacity>
         <Text style={styles.headerTitle} allowFontScaling={false}>Cadastro do imóvel</Text>
@@ -121,17 +142,10 @@ const CadastroImovel = ({ route, navigation }) => {
           <TouchableOpacity
             key={step.status}
             style={styles.stepWrapper}
-            disabled={imovel.status !== step.status}  // Desativa os botões que não estão na vez
+            disabled={imovel.status < step.status}  // Desativa os botões das etapas futuras
             onPress={() => {
               if (imovel.status === step.status) {
-                navigation.navigate(step.view, {
-                  etapa: step.label,
-                  status: step.status,
-                  id: imovel.id,
-                  classificacao: imovel.classificacao,
-                  tipo: imovel.tipo,
-                  usuario_id: usuario_id
-                });
+                handleStepNavigation(step);
               }
             }}
           >
@@ -149,6 +163,7 @@ const CadastroImovel = ({ route, navigation }) => {
     </SafeAreaView>
   );
 };
+
 
 const styles = StyleSheet.create({
   safeArea: {

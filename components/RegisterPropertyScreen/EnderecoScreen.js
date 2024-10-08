@@ -77,7 +77,8 @@ const EnderecoScreen = ({ route, navigation }) => {
             if (response.status === 200) {
                 const { id, usuario_id, status, classificacao, tipo } = response.data;
                 // Redireciona para a outra rota, passando os dados relevantes
-                navigation.navigate('PreDadosProprietario', {
+                console.log("Status (cep): ", status)
+                navigation.navigate('CadastroImovel', {
                     id,
                     usuario_id,
                     status,
@@ -179,7 +180,7 @@ const EnderecoScreen = ({ route, navigation }) => {
                                     onPress={handleSaveImovel}
                                     disabled={!isFormValid()}
                                 >
-                                    <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar endereço ID:{usuario_id}</Text>
+                                    <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar endereço</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.laterButton}>
                                     <Image
