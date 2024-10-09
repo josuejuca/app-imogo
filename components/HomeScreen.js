@@ -84,7 +84,10 @@ const Home = ({ route, navigation }) => {
                         />
                     </View>
                     <TouchableOpacity onPress={() => alert('Notificações')}>
-                        <Ionicons name="notifications-outline" size={24} color="#1F2024" />
+                        <Image
+                            source={require('../assets/icons/notificacao.png')}
+                            style={styles.IconFooter}
+                        />
                     </TouchableOpacity>
                 </View>
 
@@ -173,29 +176,46 @@ const Home = ({ route, navigation }) => {
                 {/* Footer fixo */}
                 <View style={styles.footerContainer}>
                     <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('Home', { usuario_id })}>
-                        <Ionicons name="home" size={24} color="#FF7A00" />
+                        <Image
+                            source={require('../assets/icons/home.png')}
+                            style={styles.IconFooter}
+                        />
                         <Text style={styles.footerItemTextActive} allowFontScaling={false}>Meus imóveis</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.footerItem} onPress={() => setModalVisible(true)}>
-                        <FontAwesome5 name="plus-square" size={24} color="#7A7A7A" />
+                        <Image
+                            source={require('../assets/icons/publicar.png')}
+                            style={styles.IconFooter}
+                        />
                         <Text style={styles.footerItemText} allowFontScaling={false}>Publicar</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('PricerScreen')}>
-                        <FontAwesome5 name="dollar-sign" size={24} color="#7A7A7A" />
+                    <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('AvaliadorScreen')}>
+                        <Image
+                            source={require('../assets/icons/avaliador.png')}
+                            style={styles.IconFooter}
+                        />
                         <Text style={styles.footerItemText} allowFontScaling={false}>Precificador</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.footerItem} onPress={() => navigation.navigate('ProfileScreen')}>
-                        <Ionicons name="person-outline" size={24} color="#7A7A7A" />
+                        <Image
+                            source={require('../assets/icons/perfil.png')}
+                            style={styles.IconFooter}
+                        />
                         <Text style={styles.footerItemText} allowFontScaling={false}>Perfil</Text>
                     </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
     );
-};                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+};
 
 // Estilização
 const styles = StyleSheet.create({
+
+    IconFooter: {
+        width: 24,
+        height: 24
+    },
     safeArea: {
         flex: 1,
         backgroundColor: '#F5F5F5',
@@ -218,7 +238,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logo: {
-        width: width * 0.15,
+        width: width * 0.55,
         height: height * 0.05,
     },
     headerLine: {
@@ -367,6 +387,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: width * 0.02,
+        marginBottom: width * 0.05
     },
     categoryIcon: {
         width: '60%',

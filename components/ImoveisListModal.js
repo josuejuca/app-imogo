@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, Text, ActivityIndicator, RefreshControl } from 'react-native';
-import axios from 'axios'; // Importando axios para fazer a requisição
+import axios from 'axios'; // Importando axios
 import ImovelCard from './ImovelCardModal';
 
 const ImoveisList = ({ usuario_id, navigation }) => {
@@ -18,7 +18,7 @@ const ImoveisList = ({ usuario_id, navigation }) => {
         status: imovel.status, // Agora estamos usando IdStatus para o status numérico
         imagem: imovel.foto_app_capa,
         valor: imovel.valor_venda ? formatCurrency(imovel.valor_venda) : 'Valor não informado',
-        localizacao: imovel.cidade && imovel.uf ? `${imovel.cidade} - ${imovel.uf}` : 'Finalize o Cadastro',
+        localizacao: imovel.cidade && imovel.uf ? `${imovel.endereco} | ${imovel.bairro} - ${imovel.cidade}/${imovel.uf}` : 'Finalize o Cadastro',
       }));
       setImoveis(fetchedImoveis);
     } catch (error) {

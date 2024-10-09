@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     width: width * 0.85,
     paddingVertical: height * 0.03,
     paddingHorizontal: width * 0.05,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
     borderRadius: Platform.OS === 'ios' ? 20 : 15, // Diferente para iOS e Android
     alignItems: 'center',
     justifyContent: 'center',
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
       ios: width * 0.04,
       android: width * 0.04,
     }),
-    color: '#7A7A7A',
+    color: '#2F3036',
     marginBottom: height * 0.02,
     textAlign: 'center',
   },
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: width * 0.03,
     paddingVertical: height * 0.015,
     marginBottom: height * 0.02,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
   },
   dropdownButtonText: {
     fontSize: width * 0.045,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CCC',
     borderRadius: 10,
-    backgroundColor: '#FFF',
+    backgroundColor: '#F5F5F5',
     overflow: 'hidden',
   },
   dropdownItem: {
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   dropdownItemTextSelected: {
-    color: '#FFF',
+    color: '#F5F5F5',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -224,8 +224,8 @@ const styles = StyleSheet.create({
     marginTop: height * 0.02,
   },
   cancelButton: {
-    backgroundColor: '#FFF',
-    borderColor: '#FF7A00',
+    backgroundColor: '#F5F5F5',
+    borderColor: '#1F2024',
     borderWidth: 1,
     borderRadius: 25,
     paddingVertical: height * 0.015,
@@ -244,14 +244,14 @@ const styles = StyleSheet.create({
       ios: width * 0.035, // Menor em iOS para melhor aparência
       android: width * 0.04,
     }),
-    color: '#FF7A00',
+    color: '#1F2024',
   },
   okButtonText: {
     fontSize: Platform.select({
       ios: width * 0.035,
       android: width * 0.04,
     }),
-    color: '#FFF',
+    color: '#F5F5F5',
   },
 });
 

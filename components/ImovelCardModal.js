@@ -1,8 +1,8 @@
 // components/ImovelCard.js
 import React from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Importando o hook useNavigation
-
+import { Ionicons } from '@expo/vector-icons';
 const { width, height } = Dimensions.get('window');
 
 // Função para definir os ícones dos status
@@ -108,7 +108,7 @@ const ImovelCard = ({ imovel }) => {
     <TouchableOpacity style={styles.cardContainer} onPress={handleNavigation}>
       {/* Imagem do imóvel */}
       <View style={styles.imageContainer}>
-      <Image source={{ uri: imagem }} style={styles.image} resizeMode="cover" />
+        <Image source={{ uri: imagem }} style={styles.image} resizeMode="cover" />
 
 
       </View>
@@ -117,7 +117,7 @@ const ImovelCard = ({ imovel }) => {
       <View style={styles.infoContainer}>
         {/* Descrição */}
         <Text style={styles.priceText} allowFontScaling={false}>{valor}</Text>
-        <Text style={styles.locationText} allowFontScaling={false}>{localizacao}</Text>
+        <Text style={styles.locationText} allowFontScaling={false}><Ionicons name="location-sharp" color="#FB7D10" /> {localizacao}</Text>
 
         {/* Progresso */}
         <View style={styles.progressContainer}>
@@ -132,8 +132,8 @@ const ImovelCard = ({ imovel }) => {
                       index < progress - 1 || (status === 24 || status === 13)
                         ? color // Estágios anteriores completos ou progresso completo para status 13/24
                         : index === progress - 1 && status !== 24 && status !== 13
-                        ? 'transparent' // Barra ativa será dividida em duas cores, exceto para 13/24
-                        : '#D0D0D0', // Estágios futuros vazios
+                          ? 'transparent' // Barra ativa será dividida em duas cores, exceto para 13/24
+                          : '#D0D0D0', // Estágios futuros vazios
                   },
                 ]}
               >
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: width * 0.037,
-    color: '#71727A',
+    color: '#FB7D10',
     marginBottom: height * 0.01,
   },
   progressContainer: {

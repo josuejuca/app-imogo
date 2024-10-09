@@ -111,7 +111,7 @@ const CadastroImovel = ({ route, navigation }) => {
     { label: 'Endereço do imóvel', status: 2, view: 'PreEnderecoScreen' },
     { label: 'Dados do proprietário', status: 3, view: 'PreDadosProprietario' },
     { label: 'Foto do Documento', status: 4, view: 'PreDocumentoScreen' },
-    { label: 'Selfie do proprietário', status: 5, view: 'SelfieProprietarioView' },
+    { label: 'Selfie do proprietário', status: 5, view: 'PreSelfieScreen' },
   ];
 
   if (loading) {

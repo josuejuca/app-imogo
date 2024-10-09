@@ -26,6 +26,11 @@ import PreDocumentoScreen from './components/RegisterPropertyScreen/PreDocumento
 import TipoFotoScreen from './components/RegisterPropertyScreen/TipoFotoScreen';
 import FotoQRScreen from './components/RegisterPropertyScreen/FotoQRScreen';
 import FotoInteraScreen from './components/RegisterPropertyScreen/FotoInteraScreen';
+import PreSelfieScreen from './components/RegisterPropertyScreen/PreSelfieScreen';
+import SelfieScreen from './components/RegisterPropertyScreen/SelfieScreen';
+import CadastroImovelSuccessScreen from './components/RegisterPropertyScreen/CadastroImovelSuccessScreen';
+
+import AvaliadorScreen from './components/AvaliadorScreen';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -98,6 +103,11 @@ export default function App() {
         <Stack.Screen name='TipoFotoScreen' component={TipoFotoScreen} options={{ headerShown: false }} />
         <Stack.Screen name='FotoQRScreen' component={FotoQRScreen} options={{ headerShown: false }} />
         <Stack.Screen name='FotoInteraScreen' component={FotoInteraScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='PreSelfieScreen' component={PreSelfieScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='SelfieScreen' component={SelfieScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='CadastroImovelSuccessScreen' component={CadastroImovelSuccessScreen} options={{ headerShown: false }} />
+
+        <Stack.Screen name='AvaliadorScreen' component={AvaliadorScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
