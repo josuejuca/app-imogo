@@ -7,32 +7,29 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
   const [detalhesDisponiveis, setDetalhesDisponiveis] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Definindo o endpoint da API com base no tipo
   const apiEndpoint =
     type === 'imovel'
       ? 'http://imogo.juk.re:8000/api/v1/caracteristicas_imovel/?skip=0&limit=100'
       : 'http://imogo.juk.re:8000/api/v1/caracteristicas_condominio/?skip=0&limit=100';
 
-  // Função para limpar e carregar os dados da API quando o modal for aberto
   useEffect(() => {
     if (isVisible) {
-      setLoading(true); // Iniciar o carregamento
-      setDetalhesDisponiveis([]); // Limpar os detalhes disponíveis
+      setLoading(true);
+      setDetalhesDisponiveis([]);
       fetch(apiEndpoint)
         .then((response) => response.json())
         .then((data) => {
           const caracteristicas = data.map((item) => item.caracteristicas);
           setDetalhesDisponiveis(caracteristicas);
-          setLoading(false); // Carregamento concluído
+          setLoading(false);
         })
         .catch((error) => {
           console.error('Erro ao carregar os detalhes:', error);
-          setLoading(false); // Mesmo em caso de erro, parar o carregamento
+          setLoading(false);
         });
     }
   }, [isVisible]);
 
-  // Função para adicionar ou remover detalhes
   const toggleDetalhe = (detalhe) => {
     if (detalhesSelecionados.includes(detalhe)) {
       setDetalhesSelecionados(detalhesSelecionados.filter((item) => item !== detalhe));
@@ -43,16 +40,15 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
 
   return (
     <Modal visible={isVisible} transparent={true} animationType="slide">
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+      <TouchableOpacity style={styles.modalContainer} onPress={toggleModal} activeOpacity={1}>
+        <TouchableOpacity style={styles.modalContent} activeOpacity={1}>
           <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
-          <Text style={styles.modalTitle}>
-            Selecione os detalhes {type === 'imovel' ? 'do Imóvel' : 'do Condomínio'}
+          <Text style={styles.modalTitle} allowFontScaling={false}>
+            Detalhes {type === 'imovel' ? 'do Imóvel' : 'do Condomínio'}
           </Text>
 
-          {/* Exibir o indicador de carregamento enquanto os dados estão sendo buscados */}
           {loading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#FF7A00" />
@@ -74,6 +70,8 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
                       styles.detalheOptionText,
                       detalhesSelecionados.includes(detalhe) && styles.selectedOptionText,
                     ]}
+
+                    allowFontScaling={false}
                   >
                     {detalhe}
                   </Text>
@@ -81,8 +79,8 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
               ))}
             </ScrollView>
           )}
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -132,10 +130,10 @@ const styles = {
   },
   detalheOptionText: {
     fontSize: 16,
-    color: '#000', // Texto padrão preto
+    color: '#000',
   },
   selectedOptionText: {
-    color: '#FFF', // Texto branco para a opção selecionada
+    color: '#FFF',
   },
   loadingContainer: {
     flex: 1,

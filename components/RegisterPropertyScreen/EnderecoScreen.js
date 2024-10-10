@@ -493,7 +493,7 @@ const styles = {
     },
     saveButtonText: {
         color: '#FFF',
-        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.04 }), // Ajuste no tamanho da fonte
+        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.03 }), // Ajuste no tamanho da fonte
         fontWeight: '600',
     },
     laterButton: {
@@ -508,7 +508,7 @@ const styles = {
     },
     laterButtonText: {
         color: '#FF7A00',
-        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.04 }), // Ajuste no tamanho da fonte
+        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.03 }), // Ajuste no tamanho da fonte
         fontWeight: '600',
     },
 };

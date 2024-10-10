@@ -15,6 +15,7 @@ import {
     KeyboardAvoidingView,
     TouchableWithoutFeedback,
     Keyboard,
+    ActivityIndicator
 } from 'react-native';
 import axios from 'axios';
 import Checkbox from 'expo-checkbox';
@@ -42,6 +43,7 @@ const TipoFotoScreen = ({ route, navigation }) => {
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar o arquivo selecionado
     const [selectedDocument, setSelectedDocument] = useState(null); // Estado para armazenar o documento selecionado
     const [galeria, setGaleria] = useState(false);
+    const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
     // Função para abrir o modal
     const openModal = () => {
         setModalVisible(true);
@@ -52,53 +54,103 @@ const TipoFotoScreen = ({ route, navigation }) => {
         setModalVisible(false);
     };
 
+    // Função para abrir o armazenamento e selecionar um documento (PDF ou outro tipo de arquivo)
 
-    // Função para abrir a galeria e permitir o upload do arquivo (imagem)
-    const pickImage = async () => {
-        let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (permissionResult.granted === false) {
-            Alert.alert("Permissão negada", "É necessária a permissão para acessar a galeria.");
-            return;
-        }
-
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Apenas imagens
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        // Verificar se o usuário cancelou a seleção e se há uma imagem selecionada
-        if (!result.canceled && result.assets.length > 0) {
-            const imageUri = result.assets[0].uri;
-            setSelectedImage(imageUri); // Armazenar o URI da imagem
-            closeModal(); // Fechar o modal
-            // Exibir o URI da imagem no console
-            console.log({ imageUri, id, classificacao, tipo, usuario_id });
-            // navigation.navigate('NextView', { imageUri });
+    const pickDocument = async () => {
+        try {
+            // Abrir o seletor de documentos
+            const result = await DocumentPicker.getDocumentAsync({
+                type: '*/*', // Pode restringir a tipos específicos como 'application/pdf'
+                copyToCacheDirectory: true,
+            });
+    
+            // Log completo do resultado para análise
+            // console.log(result);
+    
+            // Verificar se o usuário não cancelou a seleção
+            if (!result.canceled && result.assets && result.assets.length > 0) {
+                const documentUri = result.assets[0].uri; // Obter o URI do documento
+    
+                if (documentUri) {
+                    console.log('Documento selecionado:', documentUri); // Exibir o URI no console
+    
+                    // Armazenar o URI do documento
+                    setSelectedDocument(documentUri);
+    
+                    // Fechar o modal, se houver
+                    closeModal();
+    
+                    // Simular envio para API ou outra ação necessária
+                    setLoading(true);
+                    await sendDocumentToAPI(documentUri);
+    
+                    // Navegar para a próxima tela, se necessário
+                    // navigation.navigate('NextView', { documentUri });
+                } else {
+                    console.log('Nenhum URI encontrado no documento.');
+                }
+            } else {
+                console.log('Seleção de documento cancelada pelo usuário.');
+            }
+        } catch (error) {
+            // Exibir alerta caso ocorra algum erro
+            Alert.alert('Erro', 'Ocorreu um erro ao tentar selecionar o documento.');
+            console.error('Erro no DocumentPicker: ', error);
         }
     };
 
-    // Função para abrir o armazenamento e selecionar um documento (PDF ou outro tipo de arquivo)
-    const pickDocument = async () => {
-        let result = await DocumentPicker.getDocumentAsync({
-            type: '*/*', // Aceitar qualquer tipo de arquivo (você pode especificar tipos como 'application/pdf' para PDFs)
-            copyToCacheDirectory: true,
-        });
+    // Função para enviar a imagem para a API
+    const sendDocumentToAPI = async (documentUri) => {
+        try {
+            const formData = new FormData();
 
-        if (result.type === 'success') {
-            setSelectedDocument(result.uri); // Armazenar o URI do documento
-            closeModal(); // Fechar o modal
-            // Redirecionar para a próxima view, passando o documento
-            navigation.navigate('NextView', { documentUri: result.uri });
+            const cnhMimeType = getMimeType(documentUri);
+
+
+            // Adicionar o arquivo CNH ao FormData
+            formData.append('pdf_cnh_file', {
+                uri: documentUri,
+                type: cnhMimeType,
+                name: `pdf_cnh_file.${cnhMimeType.split('/')[1]}`,
+            });
+
+            const response = await axios.post(`http://192.168.120.185:8000/imoveis/${id}/upload_pdf_cnh/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'accept': 'application/json',
+                },
+            });
+
+            if (response.status === 200) {
+                const { id, usuario_id, classificacao, tipo } = response.data;
+                // Alert.alert("Sucesso", "Imagem enviada com sucesso!");
+                navigation.navigate('CadastroImovelSuccessScreen', { usuario_id });
+                console.log('Resposta da API:', response.data);
+            } else {
+                throw new Error(`Erro: Código de status ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Erro ao enviar a imagem:', error.response ? error.response.data : error.message);
+            Alert.alert("Erro", "Falha ao enviar a imagem. Tente novamente.");
+        } finally {
+            setLoading(false); // Desativar o carregamento após o término
         }
+    };
+
+    const getMimeType = (uri) => {
+        const extension = uri.split('.').pop();
+        if (extension === 'jpg' || extension === 'jpeg') {
+            return 'image/jpeg';
+        } else if (extension === 'png') {
+            return 'image/png';
+        }
+        return 'application/octet-stream';
     };
 
     const handleNext = (galeriaAtualizada) => {
-        navigation.navigate('FotoQRScreen', { tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada  });
+        navigation.navigate('FotoQRScreen', { tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada });
         closeModal(); // Fechar o modal
-        console.log({tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada})
+        console.log({ tipo_documento, id, classificacao, tipo, usuario_id, galeria: galeriaAtualizada })
     };
 
     return (
@@ -137,7 +189,7 @@ const TipoFotoScreen = ({ route, navigation }) => {
                                         </View>
                                     </TouchableOpacity>
 
-                                    <TouchableOpacity style={styles.optionButton} onPress={() => {handleNext(false);}}>
+                                    <TouchableOpacity style={styles.optionButton} onPress={() => { handleNext(false); }}>
                                         <Image
                                             source={require('../../assets/icons/foto_camera.png')} // Ícone de "Tirar uma foto"
                                             style={styles.optionIcon}
@@ -168,7 +220,7 @@ const TipoFotoScreen = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                                 <Text style={styles.modalTitle} allowFontScaling={false}>Escolha um formato</Text>
 
-                                                <TouchableOpacity style={styles.modalOptionButton} onPress={() => {handleNext(true);}}>
+                                                <TouchableOpacity style={styles.modalOptionButton} onPress={() => { handleNext(true); }}>
                                                     <Image
                                                         source={require('../../assets/icons/imagem_galeria.png')} // Imagem do arquivo
                                                         style={styles.modalIcon}
@@ -219,11 +271,30 @@ const TipoFotoScreen = ({ route, navigation }) => {
                     </ScrollView>
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
+            {/* Modal de carregamento */}
+            <Modal transparent={true} animationType="fade" visible={loading}>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#FF7A00" />
+                    <Text style={styles.loadingText}>Enviando imagem...</Text>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
 
 const styles = {
+
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo translúcido
+    },
+    loadingText: {
+        color: '#FFF',
+        marginTop: 10,
+        fontSize: 16,
+    },
 
     // voltar 
     headerContainer: {

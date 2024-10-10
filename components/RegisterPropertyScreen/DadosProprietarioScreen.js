@@ -128,14 +128,14 @@ const DadosProprietarioScreen = ({ route, navigation }) => {
                     <ScrollView contentContainerStyle={styles.scrollContainer}>
                         <View style={styles.container}>
                             {/* Checkbox "Eu sou o proprietário deste imóvel" */}
-                            <View style={styles.checkboxRow}>
+                            <TouchableOpacity style={styles.checkboxRow}  onPress={togglemeuImovel}>
                                 <Checkbox
                                     value={meuImovel}
                                     onValueChange={togglemeuImovel}
                                     color={meuImovel ? '#FB7D10' : undefined}
                                 />
                                 <Text style={styles.checkboxLabel} allowFontScaling={false} >Eu sou o proprietário deste imóvel</Text>
-                            </View>
+                            </TouchableOpacity>
 
                             {/* Nome Completo */}
                             <View style={styles.row}>
@@ -411,15 +411,7 @@ const styles = {
     areaColumn: {
         width: '48%',
     },
-    areaInput: {
-        borderWidth: 1,
-        borderColor: '#D3D3D3',
-        borderRadius: 10,
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        fontSize: 16,
-        backgroundColor: '#FFF',
-    },
+ 
 
     // modal 
 
@@ -540,7 +532,7 @@ const styles = {
     },
     saveButtonText: {
         color: '#FFF',
-        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.04 }), // Ajuste no tamanho da fonte
+        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.03 }), // Ajuste no tamanho da fonte
         fontWeight: '600',
     },
     laterButton: {
@@ -555,7 +547,7 @@ const styles = {
     },
     laterButtonText: {
         color: '#FF7A00',
-        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.04 }), // Ajuste no tamanho da fonte
+        fontSize: Platform.select({ ios: width * 0.04, android: width * 0.03 }), // Ajuste no tamanho da fonte
         fontWeight: '600',
     },
     // input que abre 

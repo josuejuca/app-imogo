@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: Platform.select({
             ios: width * 0.04, // Fonte maior para iOS
-            android: width * 0.04, // Fonte ligeiramente menor para Android
+            android: width * 0.03, // Fonte ligeiramente menor para Android
         }),
         color: '#FFF',
         fontWeight: 'bold',

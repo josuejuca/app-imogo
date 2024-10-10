@@ -29,7 +29,7 @@ const CadastroImovelSuccessScreen = ({ navigation, route }) => {
                 style={styles.buttonPrimary}
                 onPress={() => navigation.navigate('Home', { usuario_id })} // Ajuste para a navegação correta
             >
-                <Text style={styles.buttonText} allowFontScaling={false}>Inserir características</Text>
+                <Text style={styles.buttonText} allowFontScaling={false}>OK</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

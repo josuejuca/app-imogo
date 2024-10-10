@@ -4,9 +4,8 @@ import { View, Text, TextInput, TouchableOpacity, Modal, Dimensions, Platform } 
 const { width } = Dimensions.get('window');
 
 const DescricaoModal = ({ isVisible, toggleModal, descricao, setDescricao }) => {
-  const [descricaoInput, setDescricaoInput] = useState(descricao || ''); // Manter a descrição do estado principal
+  const [descricaoInput, setDescricaoInput] = useState(descricao || '');
 
-  // Função para salvar e fechar o modal
   const salvarDescricao = () => {
     setDescricao(descricaoInput);
     toggleModal();
@@ -18,8 +17,8 @@ const DescricaoModal = ({ isVisible, toggleModal, descricao, setDescricao }) => 
       transparent={true}
       animationType="slide"
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
+      <TouchableOpacity style={styles.modalContainer} onPress={toggleModal} activeOpacity={1}>
+        <TouchableOpacity style={styles.modalContent} activeOpacity={1}>
           <View style={styles.headerContainer}>
             <Text style={styles.modalTitle} allowFontScaling={false}>Descrição complementar</Text>
             <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
@@ -27,9 +26,10 @@ const DescricaoModal = ({ isVisible, toggleModal, descricao, setDescricao }) => 
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.helperText} allowFontScaling={false}>Descreva aqui da melhor forma possível as características únicas do seu imóvel que faltaram anteriormente.</Text>
+          <Text style={styles.helperText} allowFontScaling={false}>
+            Descreva aqui da melhor forma possível as características únicas do seu imóvel que faltaram anteriormente.
+          </Text>
 
-          {/* Campo de texto da descrição */}
           <TextInput
             style={styles.input}
             multiline
@@ -38,18 +38,18 @@ const DescricaoModal = ({ isVisible, toggleModal, descricao, setDescricao }) => 
             onChangeText={setDescricaoInput}
             placeholder="Digite a descrição aqui..."
             placeholderTextColor="#D3D3D3"
-            allowFontScaling={false} // Garantir que a fonte não escale
+            allowFontScaling={false}
           />
 
-          {/* Contador de caracteres */}
-          <Text style={styles.charCount} allowFontScaling={false}>{descricaoInput.length}/200</Text>
+          <Text style={styles.charCount} allowFontScaling={false}>
+            {descricaoInput.length}/200
+          </Text>
 
-          {/* Botão de salvar */}
           <TouchableOpacity style={styles.saveButton} onPress={salvarDescricao}>
             <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar</Text>
           </TouchableOpacity>
-        </View>
-      </View>
+        </TouchableOpacity>
+      </TouchableOpacity>
     </Modal>
   );
 };
@@ -65,9 +65,9 @@ const styles = {
     backgroundColor: '#FFF',
     borderRadius: 10,
     padding: 20,
-    width: Platform.select({ ios: '85%', android: '90%' }), // Responsivo entre iOS e Android
+    width: Platform.select({ ios: '85%', android: '90%' }),
     alignItems: 'center',
-    paddingTop: 40, // Deixa um espaço para o botão de fechar
+    paddingTop: 40,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -77,22 +77,22 @@ const styles = {
     marginBottom: 10,
   },
   closeButton: {
-    position: 'relative', // Ajusta para manter o alinhamento com o título
+    position: 'relative',
     right: 0,
   },
   closeButtonText: {
-    fontSize: Platform.select({ ios: 18, android: 16 }), // Controla o tamanho da fonte entre plataformas
+    fontSize: Platform.select({ ios: 18, android: 16 }),
     color: '#000',
     fontWeight: 'bold',
   },
   modalTitle: {
-    fontSize: Platform.select({ ios: 18, android: 16 }), // Tamanho da fonte para o título
+    fontSize: Platform.select({ ios: 18, android: 16 }),
     fontWeight: 'bold',
     flex: 1,
     textAlign: 'center',
   },
   helperText: {
-    fontSize: Platform.select({ ios: 14, android: 13 }), // Tamanho da fonte
+    fontSize: Platform.select({ ios: 14, android: 13 }),
     color: '#7A7A7A',
     textAlign: 'center',
     marginBottom: 10,
@@ -104,7 +104,7 @@ const styles = {
     padding: 10,
     width: '100%',
     height: 120,
-    fontSize: Platform.select({ ios: 16, android: 15 }), // Responsividade no tamanho da fonte
+    fontSize: Platform.select({ ios: 16, android: 15 }),
     textAlignVertical: 'top',
     backgroundColor: '#FFF',
   },

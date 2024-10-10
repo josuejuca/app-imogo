@@ -70,9 +70,16 @@ const OneCadastroImovel = ({ route, navigation }) => {
   const [detalhesImovel, setDetalhesImovel] = useState([]);
   const [detalhesCondominio, setDetalhesCondominio] = useState([]);
   // const [formasPagamento, setFormasPagamento] = useState([]);
-
+  // Validação para habilitar o botão "Salvar"
+  const isFormValid = () => orientacaoSol && areaPrivativa && formasPagamento && valorVendaImovel;
   // Função para enviar os dados do imóvel para a API
   const handleSaveImovel = async () => {
+
+    if (!isFormValid()) {
+      Alert.alert('Erro', 'Preencha todos os campos obrigatórios.');
+      return;
+    }
+
     try {
       const payload = {
         usuario_id: usuario_id,
@@ -105,7 +112,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
         navigation.navigate('CadastroImovel', {
           id,
           usuario_id,
-          status, 
+          status,
           classificacao,
           tipo
         });
@@ -503,18 +510,20 @@ const OneCadastroImovel = ({ route, navigation }) => {
 
               {/* Botões de ação */}
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.saveButton} onPress={handleSaveImovel}>
-                  <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar características</Text>
+                <TouchableOpacity
+                  style={[styles.saveButton, !isFormValid() && { backgroundColor: '#ccc' }]}
+                  onPress={handleSaveImovel}
+                  disabled={!isFormValid()}
+                >
+                  <Text style={styles.saveButtonText} allowFontScaling={false}>Salvar Características</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity style={styles.laterButton}>
                   <Image
                     source={require('../../assets/icons/bookmark.png')} // Ícone de terminar mais tarde
                     style={styles.laterIcon}
                   />
                   <Text style={styles.laterButtonText} allowFontScaling={false}
-                    onPress={() => navigation.navigate('Home', {usuario_id})}
-
+                    onPress={() => navigation.navigate('Home', { usuario_id })}
                   >Terminar mais tarde</Text>
                 </TouchableOpacity>
               </View>
