@@ -134,7 +134,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
                 });
             }
 
-            const response = await axios.post(`http://192.168.122.9:8000/imoveis/${id}/upload_cnh/`, formData, {
+            const response = await axios.post(`http://imogo.juk.re:8000/imoveis/${id}/upload_cnh/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json',

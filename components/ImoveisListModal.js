@@ -11,7 +11,7 @@ const ImoveisList = ({ usuario_id, navigation }) => {
   // Função para buscar os imóveis do usuário
   const fetchImoveis = async () => {
     try {
-      const response = await axios.get(`http://192.168.122.9:8000/api/v1/usuarios/${usuario_id}/imoveis?skip=0&limit=100`);
+      const response = await axios.get(`http://imogo.juk.re:8000/api/v1/usuarios/${usuario_id}/imoveis?skip=0&limit=100`);
       const fetchedImoveis = response.data.map((imovel) => ({
         id: imovel.id,
         usuario_id: imovel.usuario_id,

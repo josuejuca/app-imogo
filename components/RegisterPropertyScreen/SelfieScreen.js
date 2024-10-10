@@ -96,7 +96,7 @@ const SelfieScreen = ({ route, navigation }) => {
                 name: `foto_pessoal_file.${cnhMimeType.split('/')[1]}`,
             });
 
-            const response = await axios.post(`http://192.168.122.9:8000/imoveis/${id}/upload_foto_pessoal/`, formData, {
+            const response = await axios.post(`http://imogo.juk.re:8000/imoveis/${id}/upload_foto_pessoal/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json',
