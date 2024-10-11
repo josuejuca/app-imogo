@@ -1,4 +1,4 @@
-import React, { useState, useEffect  } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Alert,
     Image,
@@ -39,6 +39,8 @@ const FotoQRScreen = ({ route, navigation }) => {
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar o arquivo selecionado
     const [selectedDocument, setSelectedDocument] = useState(null); // Estado para armazenar o documento selecionado
     const [textoDocumento, setTextoDocumento] = useState('...');
+    const [titleDocumento, setTitleDocumento] = useState('...');
+    const [labelDocumento, setLabelDocumento] = useState('...');
     // Função para abrir o modal
     const openModal = () => {
         setModalVisible(true);
@@ -49,7 +51,7 @@ const FotoQRScreen = ({ route, navigation }) => {
         setModalVisible(false);
     };
 
-   
+
     // Função para abrir a galeria e permitir o upload do arquivo (imagem)
     const pickImage = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -130,6 +132,16 @@ const FotoQRScreen = ({ route, navigation }) => {
         }
     }, [galeria]);  // O useEffect só é acionado quando "galeria" muda
 
+    useEffect(() => {
+        if (tipo_documento != 'CNH') {
+            setTitleDocumento("Envio da Frente do RG");
+            setLabelDocumento("Por favor, envie a foto da parte da frente do RG do proprietário para prosseguirmos com a validação.");
+        } else {
+            setTitleDocumento("Primeiro o QR Code");
+            setLabelDocumento("Vamos validar o QR Code da CNH do proprietário. Ele está na parte de trás do documento.");
+        }
+    }, [tipo_documento]);  // O useEffect só é acionado quando "galeria" muda
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.headerContainer}>
@@ -141,7 +153,7 @@ const FotoQRScreen = ({ route, navigation }) => {
                 </Text>
             </View>
             <Text style={styles.classificacaoText} allowFontScaling={false}>
-                Primeiro o QR Code 
+                {titleDocumento}
             </Text>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -149,7 +161,7 @@ const FotoQRScreen = ({ route, navigation }) => {
                         <View style={styles.container}>
 
                             <View style={styles.row}>
-                                <Text style={styles.checkboxLabel} allowFontScaling={false}>Vamos validar o QR Code da CNH do proprietário. Ele está na parte de trás do documento. {galeria}</Text>
+                                <Text style={styles.checkboxLabel} allowFontScaling={false}>{labelDocumento}</Text>
                             </View>
                             <Image
                                 source={require('../../assets/img/stape3.png')} // Substitua pelo caminho correto da imagem
@@ -239,7 +251,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    
+
     descriptionBox: {
         borderWidth: 1,
         borderColor: '#D3D3D3',
@@ -277,7 +289,7 @@ const styles = {
 
     // salvar 
 
-   
+
     inputContainer: {
         width: '100%',
     },

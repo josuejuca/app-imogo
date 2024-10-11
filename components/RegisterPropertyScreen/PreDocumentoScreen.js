@@ -40,7 +40,7 @@ const PreDocumentoScreen = ({ navigation, route }) => {
         if (documento?.tipo_documento === 'CNH') {
             navigation.navigate('TipoFotoScreen', { id, usuario_id: documento.usuario_id, classificacao: documento.classificacao, tipo: documento.tipo, tipo_documento: documento.tipo_documento });
         } else {
-            navigation.navigate('FotoDocumentoScreen', { id, usuario_id: documento.usuario_id, classificacao: documento.classificacao, tipo: documento.tipo, tipo_documento: documento.tipo_documento });
+            navigation.navigate('TipoFotoScreen', { id, usuario_id: documento.usuario_id, classificacao: documento.classificacao, tipo: documento.tipo, tipo_documento: documento.tipo_documento });
         }
     };
 

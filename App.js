@@ -31,6 +31,9 @@ import SelfieScreen from './components/RegisterPropertyScreen/SelfieScreen';
 import CadastroImovelSuccessScreen from './components/RegisterPropertyScreen/CadastroImovelSuccessScreen';
 
 import AvaliadorScreen from './components/AvaliadorScreen';
+import ImovelScreen from './components/ImovelScreen';
+
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -70,7 +73,7 @@ export default function App() {
     <NavigationContainer>
       {/* Configuração global da StatusBar */}
       <StatusBar 
-        barStyle="light-content" 
+        barStyle="dark-content" 
         backgroundColor="transparent" 
         translucent 
       />
@@ -108,6 +111,8 @@ export default function App() {
         <Stack.Screen name='CadastroImovelSuccessScreen' component={CadastroImovelSuccessScreen} options={{ headerShown: false }} />
 
         <Stack.Screen name='AvaliadorScreen' component={AvaliadorScreen} options={{ headerShown: false }} />
+
+        <Stack.Screen name='ImovelScreen' component={ImovelScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

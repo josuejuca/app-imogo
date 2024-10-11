@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Alert,
     Image,
@@ -40,7 +40,9 @@ const FotoInteraScreen = ({ route, navigation }) => {
     const [selectedImage, setSelectedImage] = useState(null); // Estado para armazenar o arquivo selecionado
     const [selectedDocument, setSelectedDocument] = useState(null); // Estado para armazenar o documento selecionado
     const [loading, setLoading] = useState(false); // Estado para controlar o carregamento
-
+    const [textoDocumento, setTextoDocumento] = useState('...');
+    const [titleDocumento, setTitleDocumento] = useState('...');
+    const [labelDocumento, setLabelDocumento] = useState('...');
     // Função para abrir o modal
     const openModal = () => {
         setModalVisible(true);
@@ -52,7 +54,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
     };
 
 
-    
+
     // Função para abrir a galeria e permitir o upload do arquivo (imagem)
     const pickImage = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -113,38 +115,65 @@ const FotoInteraScreen = ({ route, navigation }) => {
 
     // Função para enviar a imagem para a API
     const sendImageToAPI = async (imageUriInteira, imageUriQR) => {
+        setLoading(true); // Ativar carregamento enquanto faz a requisição
         try {
             const formData = new FormData();
-
+    
             const cnhMimeType = getMimeType(imageUriInteira);
-            const qrMimeType = getMimeType(imageUriQR);
-
-            // Adicionar o arquivo CNH ao FormData
-            formData.append('cnh_file', {
-                uri: imageUriInteira,
-                type: cnhMimeType,
-                name: `cnh_file.${cnhMimeType.split('/')[1]}`,
-            });
-
-            if (imageUriQR) {
-                formData.append('qr_cnh_file', {
-                    uri: imageUriQR,
-                    type: qrMimeType,
-                    name: `qr_cnh_file.${qrMimeType.split('/')[1]}`,
+            const qrMimeType = imageUriQR ? getMimeType(imageUriQR) : null;
+    
+            let apiUrl = ''; // Variável para armazenar o endpoint correto
+    
+            if (tipo_documento === 'CNH') {
+                // Adicionar o arquivo CNH ao FormData
+                formData.append('cnh_file', {
+                    uri: imageUriInteira,
+                    type: cnhMimeType,
+                    name: `cnh_file.${cnhMimeType.split('/')[1]}`,
                 });
-            }
+    
+                if (imageUriQR) {
+                    formData.append('qr_cnh_file', {
+                        uri: imageUriQR,
+                        type: qrMimeType,
+                        name: `qr_cnh_file.${qrMimeType.split('/')[1]}`,
+                    });
+                }
+    
+                apiUrl = `http://imogo.juk.re:8000/imoveis/${id}/upload_cnh/`; // Endpoint para CNH
+            } else {
+                
+                // Adicionar o arquivo RG ao FormData
+                formData.append('rg_costa_file', {
+                    uri: imageUriInteira,
+                    type: cnhMimeType,
+                    name: `rg_costa_file.${cnhMimeType.split('/')[1]}`,
+                });
 
-            const response = await axios.post(`http://imogo.juk.re:8000/imoveis/${id}/upload_cnh/`, formData, {
+                if (imageUriQR) {
+                    formData.append('rg_frente_file', {
+                        uri: imageUriQR,
+                        type: qrMimeType,
+                        name: `rg_frente_file.${qrMimeType.split('/')[1]}`,
+                    });
+                }
+    
+                apiUrl = `http://imogo.juk.re:8000/imoveis/${id}/upload_rg/`; // Endpoint para RG
+            }
+    
+            console.log('FormData:', formData); // Log para verificar o conteúdo do formData
+    
+            // Fazer a requisição para o endpoint correto
+            const response = await axios.post(apiUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json',
                 },
             });
-
+    
             if (response.status === 200) {
                 const { id, usuario_id, status, classificacao, tipo } = response.data;
-                // Alert.alert("Sucesso", "Imagem enviada com sucesso!");
-                navigation.navigate('CadastroImovel', { status: 5, id, classificacao, tipo, usuario_id});
+                navigation.navigate('CadastroImovel', { status: 5, id, classificacao, tipo, usuario_id });
                 console.log('Resposta da API:', response.data);
             } else {
                 throw new Error(`Erro: Código de status ${response.status}`);
@@ -156,6 +185,8 @@ const FotoInteraScreen = ({ route, navigation }) => {
             setLoading(false); // Desativar o carregamento após o término
         }
     };
+    
+
 
     const getMimeType = (uri) => {
         const extension = uri.split('.').pop();
@@ -182,6 +213,16 @@ const FotoInteraScreen = ({ route, navigation }) => {
         }
     };
 
+    useEffect(() => {
+        if (tipo_documento != 'CNH') {
+            setTitleDocumento("Envio do Verso do RG");
+            setLabelDocumento("Por favor, envie a foto da parte de trás do RG do proprietário para completar a validação.");
+        } else {
+            setTitleDocumento("Documento inteiro");
+            setLabelDocumento("Agora vamos checar a foto que está na CNH e os dados que estão na parte frontal do documento.");
+        }
+    }, [tipo_documento]);  // O useEffect só é acionado quando "galeria" muda
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.headerContainer}>
@@ -193,7 +234,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
                 </Text>
             </View>
             <Text style={styles.classificacaoText} allowFontScaling={false}>
-                Documento inteiro
+                {titleDocumento}
             </Text>
             <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -201,7 +242,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
                         <View style={styles.container}>
                             <View style={styles.row}>
                                 <Text style={styles.checkboxLabel} allowFontScaling={false}>
-                                    Agora vamos checar a foto que está na CNH e os dados que estão na parte frontal do documento.
+                                    {labelDocumento}
                                 </Text>
                             </View>
                             <Image

@@ -98,6 +98,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
         detalhes_do_imovel: detalhesImovel,
         detalhes_do_condominio: detalhesCondominio,
         formas_pagamento: formasPagamento,
+        
         foto_app_capa: 'https://cdn.imogo.com.br/img/banner_imovel.png',
       };
 

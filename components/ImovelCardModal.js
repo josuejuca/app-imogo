@@ -100,7 +100,7 @@ const ImovelCard = ({ imovel }) => {
       navigation.navigate('CadastroImovel', { id, status, usuario_id });
     } else {
       // Redireciona para ImovelDetalhe para status acima de 9
-      navigation.navigate('ImovelDetalhe', { id, status, usuario_id });
+      navigation.navigate('ImovelScreen', { id, status, usuario_id });
     }
   };
 
@@ -117,7 +117,7 @@ const ImovelCard = ({ imovel }) => {
       <View style={styles.infoContainer}>
         {/* Descrição */}
         <Text style={styles.priceText} allowFontScaling={false}>{valor}</Text>
-        <Text style={styles.locationText} allowFontScaling={false}><Ionicons name="location-sharp" color="#FB7D10" /> {localizacao}</Text>
+        <Text style={[styles.locationText , { color: status >= 10 ? '#FB7D10' : '#8F9098' }]} allowFontScaling={false}><Ionicons name="location-sharp" color={status >= 10 ? '#FB7D10' : '#8F9098'} /> {localizacao}</Text>
 
         {/* Progresso */}
         <View style={styles.progressContainer}>
