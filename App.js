@@ -3,17 +3,17 @@ import { StatusBar, ActivityIndicator, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFonts, Nunito_400Regular, Nunito_700Bold } from '@expo-google-fonts/nunito';
+import AppLoading from 'expo-app-loading';
 
-import Welcome from './components/WelcomeScreen'; // Tela de Bem-vindo 
-import Login from './components/LoginScreen'; // Tela de Login 
-// cadastro
-import SignupScreen from './components/SignupScreen/SignupScreenSeusDados'; // Tela de cadastro ( seus dados )
-import SignupEmailScreen from './components/SignupScreen/SignupScreenEmail'; // Tela de cadastro ( email )
-import SurveyScreen from './components/SignupScreen/SignupScreenQuery'; // Tela de cadastro ( pesquisa )
+// Componentes importados
+import Welcome from './components/WelcomeScreen'; 
+import Login from './components/LoginScreen'; 
+import SignupScreen from './components/SignupScreen/SignupScreenSeusDados';
+import SignupEmailScreen from './components/SignupScreen/SignupScreenEmail';
+import SurveyScreen from './components/SignupScreen/SignupScreenQuery';
 import SuccessScreen from './components/SignupScreen/SignupScreenSuccess';
-// fim cadastro 
-
-import OneCadastroImovel from './components/RegisterPropertyScreen/CaracteristicasScreen'; // Etapa 1 
+import OneCadastroImovel from './components/RegisterPropertyScreen/CaracteristicasScreen'; 
 import Home from './components/HomeScreen';
 import CadastroImovel from './components/RegisterPropertyScreen/CadastroImovelScreen';
 import ProfileScreen from './components/ProfileScreen';
@@ -29,16 +29,20 @@ import FotoInteraScreen from './components/RegisterPropertyScreen/FotoInteraScre
 import PreSelfieScreen from './components/RegisterPropertyScreen/PreSelfieScreen';
 import SelfieScreen from './components/RegisterPropertyScreen/SelfieScreen';
 import CadastroImovelSuccessScreen from './components/RegisterPropertyScreen/CadastroImovelSuccessScreen';
-
 import AvaliadorScreen from './components/AvaliadorScreen';
 import ImovelScreen from './components/ImovelScreen';
-
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [initialRoute, setInitialRoute] = useState(null); // Estado para armazenar a rota inicial
   const [usuario_id, setusuario_id] = useState(null); // Estado para armazenar o usuario_id
+
+  // Carregamento das fontes
+  const [fontsLoaded] = useFonts({
+    Nunito_400Regular,
+    Nunito_700Bold,
+  });
 
   useEffect(() => {
     // Verifica se o usuário já fez login
@@ -60,8 +64,8 @@ export default function App() {
     checkLoginStatus(); // Executa a verificação ao carregar o app
   }, []);
 
-  // Enquanto o estado inicial estiver sendo verificado, exiba um indicador de carregamento
-  if (!initialRoute) {
+  // Enquanto as fontes ou o estado inicial estiverem sendo verificados, exiba um indicador de carregamento
+  if (!fontsLoaded || !initialRoute) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#FB7D10" />
@@ -109,9 +113,7 @@ export default function App() {
         <Stack.Screen name='PreSelfieScreen' component={PreSelfieScreen} options={{ headerShown: false }} />
         <Stack.Screen name='SelfieScreen' component={SelfieScreen} options={{ headerShown: false }} />
         <Stack.Screen name='CadastroImovelSuccessScreen' component={CadastroImovelSuccessScreen} options={{ headerShown: false }} />
-
         <Stack.Screen name='AvaliadorScreen' component={AvaliadorScreen} options={{ headerShown: false }} />
-
         <Stack.Screen name='ImovelScreen' component={ImovelScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>

@@ -82,7 +82,7 @@ const DadosProprietarioScreen = ({ route, navigation }) => {
     
         try {
             // Requisição PUT para a API
-            const response = await axios.put(`http://imogo.juk.re:8000/api/v1/imoveis/${id}/proprietario`, {
+            const response = await axios.put(`http://192.168.120.185:8000/api/v1/imoveis/${id}/proprietario`, {
                 nome_completo_prop: nomeCompleto,
                 cpf_prop: cpf,
                 estado_civil_prop: estadoCivil,

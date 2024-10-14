@@ -33,7 +33,7 @@ const Home = ({ route, navigation }) => {
     const fetchUserInfo = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://imogo.juk.re:8000/api/v1/usuarios/${usuario_id}`);
+            const response = await axios.get(`http://192.168.120.185:8000/api/v1/usuarios/${usuario_id}`);
             setUserInfo(response.data); // Armazena as informações do usuário
         } catch (error) {
             console.error('Erro ao buscar informações do usuário:', error);

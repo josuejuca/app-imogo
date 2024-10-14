@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Share, SafeAreaView, Platform, StatusBar } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Share, SafeAreaView, Platform, StatusBar, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 const { height, width, width: screenWidth } = Dimensions.get('window');
 
@@ -105,7 +105,7 @@ const ImovelScreen = ({ route, navigation }) => {
         // Chamada para buscar dados do imóvel pela API
         const fetchImovelData = async () => {
             try {
-                const response = await axios.get(`http://imogo.juk.re:8000/api/v1/imoveis/${id}`);
+                const response = await axios.get(`http://192.168.120.185:8000/api/v1/imoveis/${id}`);
                 const data = response.data;
                 setImovelData(data);
             } catch (error) {
@@ -125,7 +125,7 @@ const ImovelScreen = ({ route, navigation }) => {
     const handleShare = async () => {
         try {
             const result = await Share.share({
-                message: 'Confira este link: https://imogo.com.br/',
+                message:  imovelData.link || 'Visite o nosso site: https://imogo.com.br/' ,
             });
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
@@ -189,9 +189,9 @@ const ImovelScreen = ({ route, navigation }) => {
 
     if (!imovelData) {
         return (
-            <SafeAreaView style={styles.safeArea}>
-                <Text>Carregando dados do imóvel...</Text>
-            </SafeAreaView>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#FB7D10" />
+            </View>
         );
     }
 
@@ -270,7 +270,7 @@ const ImovelScreen = ({ route, navigation }) => {
                         <Ionicons name="location-sharp" color="#FB7D10" size={16} /> {formatEndereco(imovelData)}
                     </Text>
                     <Text style={styles.details} allowFontScaling={false}>Área privativa: {imovelData.area_privativa} m² • Área total: {imovelData.area_total || 'N/A'} m²</Text>
-                    <Text style={styles.details} allowFontScaling={false}>Condomínio: {formatPreco(imovelData.condominio)}</Text>
+                    <Text style={styles.details} allowFontScaling={false}>Condomínio: {formatPreco(imovelData.valorCondominio)}</Text>
                     <Text style={styles.secondarydetails} allowFontScaling={false}>
                         {imovelData.numero_quartos} quartos | {imovelData.numero_banheiros} banheiros | {imovelData.numero_garagem} vagas de garagem
                     </Text>
@@ -318,7 +318,7 @@ const ImovelScreen = ({ route, navigation }) => {
                 {/* Situação */}
                 <View style={styles.section}>
                     <Text style={styles.label} allowFontScaling={false}>Situação</Text>
-                    <Text style={styles.secondarydetails} allowFontScaling={false}>{imovelData.situacao_imovel || 'N/A'}</Text>
+                    <Text style={styles.secondarydetails} allowFontScaling={false}>{imovelData.situacao || 'N/A'}</Text>
                 </View>
 
                 {/* Formas de pagamento */}

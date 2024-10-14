@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 
-const SituacaoImovelSelect = () => {
+const SituacaoImovelSelect = ({ onSelect }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedSituacao, setSelectedSituacao] = useState(null);
   const situacoes = ['Alugado', 'Desocupado', 'Ocupado pelo proprietário'];
@@ -13,6 +13,7 @@ const SituacaoImovelSelect = () => {
   const handleSelect = (situacao) => {
     setSelectedSituacao(situacao);
     setIsExpanded(false); // Recolhe a lista após a seleção
+    onSelect(situacao); // Chama a função passada via props
   };
 
   return (

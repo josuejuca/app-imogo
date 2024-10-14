@@ -95,17 +95,18 @@ const OneCadastroImovel = ({ route, navigation }) => {
         area_privativa: parseFloat(areaPrivativa),
         descricao_complementar: descricao,
         valor_venda: parseFloat(valorVendaImovel.replace(/[^\d]/g, '')) / 100, // Converte para número
+        valorCondominio: parseFloat(valorCondominio.replace(/[^\d]/g, '')) / 100, // Converte para número
         detalhes_do_imovel: detalhesImovel,
         detalhes_do_condominio: detalhesCondominio,
         formas_pagamento: formasPagamento,
-        
-        foto_app_capa: 'https://cdn.imogo.com.br/img/banner_imovel.png',
+        situacao: situacao,
+        foto_app_capa: 'https://cdn.imogo.com.br/img/banner_imovel_demo.png',
       };
 
       // Imprime o payload para verificar os dados
       console.log("Payload:", payload);
 
-      const response = await axios.post('http://imogo.juk.re:8000/api/v1/imoveis/', payload);
+      const response = await axios.post('http://192.168.120.185:8000/api/v1/imoveis/', payload);
       if (response.status === 200) {
         const { id, usuario_id, status, classificacao, tipo } = response.data;
         console.log("Status (caracteristicas): ", status)
@@ -191,6 +192,14 @@ const OneCadastroImovel = ({ route, navigation }) => {
     } else {
       setValorCondominio(''); // Limpa o valor se desmarcado
     }
+  };
+
+  // situação do imovel 
+
+  const [situacao, setSituacao] = useState(null);
+
+  const handleSituacaoChange = (newSituacao) => {
+    setSituacao(newSituacao);
   };
 
   return (
@@ -429,7 +438,7 @@ const OneCadastroImovel = ({ route, navigation }) => {
                 setDescricao={setDescricao}
               />
               {/* situação do imovel */}
-              <SituacaoImovelSelect />
+              <SituacaoImovelSelect onSelect={handleSituacaoChange}/>
 
               {/* Separador visual (Divisão) */}
               <View style={styles.divider} />

@@ -114,7 +114,7 @@ const TipoFotoScreen = ({ route, navigation }) => {
                 name: `pdf_cnh_file.${cnhMimeType.split('/')[1]}`,
             });
 
-            const response = await axios.post(`http://192.168.120.185:8000/imoveis/${id}/upload_pdf_cnh/`, formData, {
+            const response = await axios.post(`http://192.168.120.185:8000/api/v1/imoveis/${id}/upload_pdf_cnh/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'accept': 'application/json',
@@ -124,7 +124,7 @@ const TipoFotoScreen = ({ route, navigation }) => {
             if (response.status === 200) {
                 const { id, usuario_id, classificacao, tipo } = response.data;
                 // Alert.alert("Sucesso", "Imagem enviada com sucesso!");
-                navigation.navigate('CadastroImovelSuccessScreen', { usuario_id });
+                navigation.navigate('CadastroImovel', { status: 5, id, classificacao, tipo, usuario_id });
                 console.log('Resposta da API:', response.data);
             } else {
                 throw new Error(`Erro: Código de status ${response.status}`);

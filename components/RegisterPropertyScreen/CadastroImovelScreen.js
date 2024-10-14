@@ -63,7 +63,7 @@ const CadastroImovel = ({ route, navigation }) => {
   const fetchImovelData = async (imovelId) => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://imogo.juk.re:8000/api/v1/imoveis/${imovelId}`);
+      const response = await axios.get(`http://192.168.120.185:8000/api/v1/imoveis/${imovelId}`);
       setImovel(response.data);
     } catch (error) {
       console.error('Erro ao buscar os dados do imóvel:', error);
@@ -81,7 +81,7 @@ const CadastroImovel = ({ route, navigation }) => {
 
   const updateStatus = async (newStatus) => {
     try {
-      const response = await axios.patch(`http://imogo.juk.re:8000/api/v1/imoveis/${id}`, {
+      const response = await axios.patch(`http://192.168.120.185:8000/api/v1/imoveis/${id}`, {
         status: newStatus
       });
       setImovel((prevImovel) => ({

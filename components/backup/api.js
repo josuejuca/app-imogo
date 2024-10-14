@@ -31,35 +31,15 @@ const ImovelScreen = ({ route, navigation }) => {
     const [loading, setLoading] = useState(true);  // Controla o estado de loading
     const [imovelData, setImovelData] = useState(null);  // Armazena os dados do imóvel
 
-    // Função para buscar os dados da API
-    const fetchImovelData = async () => {
-        try {
-            const response = await axios.get(http://imogo.juk.re:8000/api/v1/imoveis/${id});
-            const data = response.data;
-            setImovelData(data);
-        } catch (error) {
-            console.error("Erro ao buscar dados do imóvel: ", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     // useEffect para buscar os dados quando o componente montar
     useEffect(() => {
         fetchImovelData();
     }, []);
 
-    // Função para formatar o valor em formato monetário
-    const formatCurrency = (value) => {
-        if (!value) return 'R$ 0,00';
-        return R$ ${ parseFloat(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') };
-    };
+ 
 
     // Função para formatar a localização
-    const formatLocation = (endereco, bairro, cidade, uf) => {
-        if (!endereco || !bairro || !cidade || !uf) return 'Localização não disponível';
-        return ${ endereco } | ${ bairro } - ${ cidade }/${uf};
-    };
+
 
     // Mostrar um loading enquanto a API está retornando os dados
     if (loading) {
