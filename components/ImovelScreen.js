@@ -105,7 +105,7 @@ const ImovelScreen = ({ route, navigation }) => {
         // Chamada para buscar dados do imóvel pela API
         const fetchImovelData = async () => {
             try {
-                const response = await axios.get(`http://192.168.120.185:8000/api/v1/imoveis/${id}`);
+                const response = await axios.get(`http://imogo.juk.re:8000/api/v1/imoveis/${id}`);
                 const data = response.data;
                 setImovelData(data);
             } catch (error) {

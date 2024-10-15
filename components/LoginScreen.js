@@ -62,7 +62,7 @@ const Login = ({ navigation }) => {
   // Função para lidar com o login via API utilizando axios
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://192.168.120.185:8000/login', {
+      const response = await axios.post('http://imogo.juk.re:8000/login', {
         email: email,
         senha: password,
       });

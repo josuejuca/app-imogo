@@ -67,7 +67,7 @@ const EnderecoScreen = ({ route, navigation }) => {
                 status: 3,
             };
 
-            const response = await axios.put(`http://192.168.120.185:8000/api/v1/imoveis/${id}/endereco`, payload, {
+            const response = await axios.put(`http://imogo.juk.re:8000/api/v1/imoveis/${id}/endereco`, payload, {
                 headers: {
                     'accept': 'application/json',
                     'Content-Type': 'application/json'

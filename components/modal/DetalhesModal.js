@@ -9,8 +9,8 @@ const DetalhesModal = ({ isVisible, toggleModal, detalhesSelecionados, setDetalh
 
   const apiEndpoint =
     type === 'imovel'
-      ? 'http://192.168.120.185:8000/api/v1/caracteristicas_imovel/?skip=0&limit=100'
-      : 'http://192.168.120.185:8000/api/v1/caracteristicas_condominio/?skip=0&limit=100';
+      ? 'http://imogo.juk.re:8000/api/v1/caracteristicas_imovel/?skip=0&limit=100'
+      : 'http://imogo.juk.re:8000/api/v1/caracteristicas_condominio/?skip=0&limit=100';
 
   useEffect(() => {
     if (isVisible) {

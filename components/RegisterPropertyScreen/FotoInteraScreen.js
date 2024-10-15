@@ -140,7 +140,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
                     });
                 }
     
-                apiUrl = `http://192.168.120.185:8000/api/v1/imoveis/${id}/upload_cnh/`; // Endpoint para CNH
+                apiUrl = `http://imogo.juk.re:8000/api/v1/imoveis/${id}/upload_cnh/`; // Endpoint para CNH
             } else {
                 
                 // Adicionar o arquivo RG ao FormData
@@ -158,7 +158,7 @@ const FotoInteraScreen = ({ route, navigation }) => {
                     });
                 }
     
-                apiUrl = `http://192.168.120.185:8000/api/v1/imoveis/${id}/upload_rg/`; // Endpoint para RG
+                apiUrl = `http://imogo.juk.re:8000/api/v1/imoveis/${id}/upload_rg/`; // Endpoint para RG
             }
     
             console.log('FormData:', formData); // Log para verificar o conteúdo do formData
